@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".inicio"
+    android:orientation="vertical"
+    android:gravity="center"
+    >
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="472dp"
+        >
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.example.henrylopez.fettapp.fragmentImg"
+            tools:layout="@layout/fragment_fragment_img"
+            android:id="@+id/TODO"></fragment>
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="121dp"
+        android:gravity="center"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/btnIniciar_Sesion"
+            style="@style/AppTheme1"
+            android:drawableStart="@drawable/ic_person"
+            android:padding="20sp"
+            android:onClick="inicio_sesion"
+            android:text="@string/Inicio_Sesion" />
+
+        <Button
+            android:id="@+id/btnRegistrar_Usuario"
+            style="@style/AppTheme1"
+            android:drawableStart="@drawable/ic_person_add"
+            android:padding="20sp"
+            android:text="@string/Registro"
+            android:onClick="registro_user"/>
+    </LinearLayout>
+</android.widget.LinearLayout>

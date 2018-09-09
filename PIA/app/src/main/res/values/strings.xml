@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">fettapp</string>
+
+    <!--Pantalla despues del splash screen-->
+    <string name="Registro">Registrar Ahora</string>
+    <string name="Inicio_Sesion">Iniciar Sesión</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--Pantalla de Inicio de sesión -->
+
+    <!--Pantalla de Registro -->
+    <string name="user">Gordito   </string>
+    <string name="pass">Contraseña</string>
+    <string name="email">Correo   </string>
+
+    <string name="IntEmail">Introduce tu correo</string>
+    <string name="IntUser">Introduce tu usuario</string>
+    <string name="IntPass">Introduce tu contraseña</string>
+    <!--Pantalla preferencias-->
+
+    <!--Pantalla principal-->
+
+    <!--Pantalla de mapa-->
+
+    <!--Pantalla de Busqueda-->
+
+    <!--Pantalla de mapa configuración-->
+
+
+</resources>
