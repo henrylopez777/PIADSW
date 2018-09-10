@@ -41,6 +41,7 @@ public class registro_user extends AppCompatActivity implements GoogleApiClient.
                 .build();
 
         signInButton = (SignInButton) findViewById(R.id.signInButton);
+        signInButton.setSize(SignInButton.SIZE_WIDE);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
