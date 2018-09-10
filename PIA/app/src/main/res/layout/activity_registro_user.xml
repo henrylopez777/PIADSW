@@ -4,122 +4,138 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".registro_user"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
     android:layout_margin="10dp"
-    android:fontFamily="@font/pt_sans_narrow">
+    android:fontFamily="@font/pt_sans_narrow"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".registro_user">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:src="@drawable/fett_iconsm"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
-        />
+        android:layout_marginTop="20dp"
+        android:src="@drawable/fett_iconsm" />
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="120dp"
-    android:orientation="vertical"
-    >
-    <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="#4267b2"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/fontWithe"
-        android:text="facebook"/>
+        android:layout_height="120dp"
+        android:orientation="vertical">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="Google"
-        android:textColor="@color/fontWithe"
-        android:background="#db3236"/>
+        <Button
+            android:id="@+id/btnFb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="#4267b2"
+            android:text="facebook"
+            android:textColor="@color/fontWithe" />
 
-</LinearLayout>
+        <!--<Button
+            android:id="@+id/btnGoogle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="#db3236"
+            android:text="Google"
+            android:textColor="@color/fontWithe" />-->
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/signInButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+
+    </LinearLayout>
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp">
+
         <TableRow>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:textSize="15dp"
-                android:text="@string/user" />
+                android:text="@string/user"
+                android:textSize="15dp" />
+
             <EditText
+                android:id="@+id/edtUser"
                 android:layout_width="70sp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="15dp"
-                android:maxLines="1"
-                android:inputType="text"
                 android:hint="@string/IntUser"
-                />
+                android:inputType="text"
+                android:maxLines="1"
+                android:textSize="15dp" />
         </TableRow>
+
         <TableRow>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:textSize="15dp"
-                android:text="@string/email" />
+                android:text="@string/email"
+                android:textSize="15dp" />
+
             <EditText
+                android:id="@+id/edtEmail"
                 android:layout_width="70sp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="15dp"
+                android:hint="@string/IntEmail"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:hint="@string/IntEmail"
-                />
+                android:textSize="15dp" />
         </TableRow>
+
         <TableRow>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:textSize="15dp"
-                android:text="@string/pass" />
+                android:text="@string/pass"
+                android:textSize="15dp" />
+
             <EditText
-                android:inputType="textPassword"
+                android:id="@+id/edtPass"
                 android:layout_width="70sp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="15dp"
-                android:maxLines="1"
-
                 android:hint="@string/IntPass"
-                />
+                android:inputType="textPassword"
+
+                android:maxLines="1"
+                android:textSize="15dp" />
         </TableRow>
     </TableLayout>
 
     <Button
-        android:background="@color/colorPrimary"
-        android:textColor="@color/fontWithe"
-        android:fontFamily="@font/pt_sans_narrow"
-        android:textAllCaps="false"
+        android:id="@+id/btnRegistrar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="1dp"
-        android:text="@string/Registro"
+        android:background="@color/colorPrimary"
         android:drawableStart="@drawable/ic_person_add"
-        android:textSize="25sp"
+        android:fontFamily="@font/pt_sans_narrow"
         android:paddingEnd="50dp"
         android:paddingLeft="50dp"
+        android:text="@string/Registro"
+        android:textAllCaps="false"
+        android:textColor="@color/fontWithe"
 
-        />
+        android:textSize="25sp" />
 
 
 </android.widget.LinearLayout>

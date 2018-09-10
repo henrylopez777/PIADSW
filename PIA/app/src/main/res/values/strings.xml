@@ -18,6 +18,11 @@
     <string name="IntEmail">Introduce tu correo</string>
     <string name="IntUser">Introduce tu usuario</string>
     <string name="IntPass">Introduce tu contraseña</string>
+    <string name="not_log_in">No se pudo iniciar sesión</string>
+    <string name="title_activity_menuprincipal">menuprincipal</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
     <!--Pantalla preferencias-->
 
     <!--Pantalla principal-->

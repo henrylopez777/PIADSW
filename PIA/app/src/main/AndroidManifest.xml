@@ -18,7 +18,10 @@
         </activity>
         <activity android:name=".inicio" />
         <activity android:name=".registro_user" />
-        <activity android:name=".iniciar_sesion"></activity>
+        <activity android:name=".iniciar_sesion" />
+        <activity
+            android:name=".menuprincipal"
+            android:label="@string/title_activity_menuprincipal"></activity>
     </application>
 
 </manifest>

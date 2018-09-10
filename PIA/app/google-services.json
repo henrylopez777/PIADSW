@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "903869939396",
+    "firebase_url": "https://fettapp-fb465.firebaseio.com",
+    "project_id": "fettapp-fb465",
+    "storage_bucket": "fettapp-fb465.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903869939396:android:a8f1dc461d4115bd",
+        "android_client_info": {
+          "package_name": "com.example.henrylopez.fettapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "903869939396-hodsqruu26pt3mnf6iaeuu3p8k8l718i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.henrylopez.fettapp",
+            "certificate_hash": "853637f1b5cef6a6e1e74b1e4db6531452bd7351"
+          }
+        },
+        {
+          "client_id": "903869939396-rdhsivr2vfsavto8v9mfo9kpm5fra67j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnnnb2wDEQEuCmuzlQWc_oDV0v7nD_49M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "903869939396-rdhsivr2vfsavto8v9mfo9kpm5fra67j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
