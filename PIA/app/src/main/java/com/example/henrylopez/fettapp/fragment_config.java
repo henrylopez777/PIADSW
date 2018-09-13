@@ -1,10 +1,14 @@
 package com.example.henrylopez.fettapp;
 
-import android.app.Activity;
+//import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+//import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -35,25 +39,34 @@ import com.google.android.gms.common.api.Status;
  * Use the {@link fragment_config#newInstance} factory method to
  * create an instance of this fragment.
  */
+
+
 public class fragment_config extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private static final int SELECTION_CODE_PHOTO = 20 ;
+    private static final int SELECTION_CODE = 10 ;
+    //public static final String STRING_SP_NAME = registro_user.STRING_SP_NAME;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
+    //VARIABLES PARA DETECTAR BOTON
     View vista;
     Button btnCloseSesion;
     TextView tvNombre;
     TextView tvEmail;
     TextView tvIdUser;
     ImageView ivUser;
+    Button btnChangePhoto;
+    Button btnRevokeSesion;
 
+    //INICIALIZAR API DE GOOGLE
     GoogleApiClient googleApiClient;
-
     private OnFragmentInteractionListener mListener;
 
     public fragment_config() {
@@ -78,6 +91,7 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,13 +101,18 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
         }
 
         //SESION GOOGLE
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        googleApiClient = new GoogleApiClient.Builder(getContext())
-                .enableAutoManage(getActivity(),  this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
-                .build();
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+
+        if(googleApiClient == null || !googleApiClient.isConnected()) {
+            googleApiClient = new GoogleApiClient.Builder(getContext())
+                    .enableAutoManage(getActivity(), this)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+        }
+
+        //FIN DE GOOGLE
     }
 
     //PARA NO SOBRE CARGAR LA APP Y EVITAR QUE SE CIERRE
@@ -104,6 +123,14 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
             googleApiClient.stopAutoManage(getActivity());
             googleApiClient.disconnect();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+            googleApiClient.stopAutoManage(getActivity());
+            googleApiClient.disconnect();
+
     }
 
     @Override
@@ -123,8 +150,8 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
         });
 
         //BOTON Revocar Accesos
-        btnCloseSesion=vista.findViewById(R.id.btnCloseSesion);
-        btnCloseSesion.setOnClickListener(new View.OnClickListener() {
+        btnRevokeSesion=vista.findViewById(R.id.btnRemoveAccess);
+        btnRevokeSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RevokeAccessGoogle(vista);
@@ -136,8 +163,65 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
         tvEmail=(TextView)vista.findViewById(R.id.tvCorreo);
         tvIdUser=(TextView)vista.findViewById(R.id.tvIdUsuario);
 
+        btnChangePhoto = vista.findViewById(R.id.btnChangePhoto);
+        btnChangePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialogImageOptions();
+            }
+        });
+
         // Inflate the layout for this fragment
         return vista;
+    }
+
+    private void showDialogImageOptions() {
+        final CharSequence[] opciones = {"Tomar Foto","Elegir de Galeria","Cancelar"};
+        final AlertDialog.Builder builder= new AlertDialog.Builder(getContext());
+        builder.setTitle("Elige una opción");
+        builder.setItems(opciones, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(opciones[i].equals("Tomar Foto")){
+
+                }
+                if(opciones[i].equals("Elegir de Galeria")){
+                    Intent intent = new Intent(Intent.ACTION_PICK, //ACTION_GET_CONTENT
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/");
+                    startActivityForResult(intent.createChooser(intent,"Seleccione"),SELECTION_CODE);
+                }
+                if(opciones[i].equals("Cancelar")){
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case SELECTION_CODE:
+                Uri miPath = data.getData();
+
+                /*SharedPreferences sharedPref = getContext().getSharedPreferences(STRING_SP_NAME,Context.MODE_PRIVATE );
+                String valor = sharedPref.getString("URI_FOTO", "");
+                if(valor!= ""){
+                    Glide.clear(ivUser);
+                    ivUser.setImageURI(Uri.parse(valor));
+                }else
+                {
+                    SharedPreferences.Editor mEditor = sharedPref.edit();
+                    mEditor.putString("URI_FOTO",miPath.toString());
+                    mEditor.commit();
+                }*/
+
+                Glide.clear(ivUser);
+                ivUser.setImageURI(miPath);
+                break;
+        }
     }
 
     //QUITAR ACCESOS
@@ -185,13 +269,17 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
         }
     }
 
-    //Asignar datos a la pantalla
+    //ASIGNAR DATOS A LA PANTALLA
     private void handleSignInResult(GoogleSignInResult result) {
         if(result.isSuccess()){
             GoogleSignInAccount account = result.getSignInAccount();
             tvNombre.setText(account.getDisplayName());
             tvEmail.setText(account.getEmail());
             tvIdUser.setText(account.getId());
+            /*SharedPreferences sharedPref = getContext().getSharedPreferences(STRING_SP_NAME,Context.MODE_PRIVATE );
+            String id_google_user = sharedPref.getString("ID_GOOGLE_USER","No hay dato");
+            String id_google_photo = sharedPref.getString("ID_GOOGLE_USER_PHOTO","No hay dato");
+            tvIdUser.setText(id_google_user);*/
             Glide.with(this).load(account.getPhotoUrl()).into(ivUser);
         }else{
             goLogInScreen();

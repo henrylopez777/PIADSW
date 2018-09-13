@@ -3,26 +3,24 @@ package com.example.henrylopez.fettapp;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.Button;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link fragment_start.OnFragmentInteractionListener} interface
+ * {@link fragment_italian_food.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link fragment_start#newInstance} factory method to
+ * Use the {@link fragment_italian_food#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class fragment_start extends Fragment {
+public class fragment_italian_food extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -34,7 +32,7 @@ public class fragment_start extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public fragment_start() {
+    public fragment_italian_food() {
         // Required empty public constructor
     }
 
@@ -44,11 +42,11 @@ public class fragment_start extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment fragment_start.
+     * @return A new instance of fragment fragment_italian_food.
      */
     // TODO: Rename and change types and number of parameters
-    public static fragment_start newInstance(String param1, String param2) {
-        fragment_start fragment = new fragment_start();
+    public static fragment_italian_food newInstance(String param1, String param2) {
+        fragment_italian_food fragment = new fragment_italian_food();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -63,32 +61,26 @@ public class fragment_start extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view = inflater.inflate(R.layout.fragment_fragment_start, container, false);
-
-       CardView card_view = (CardView) view.findViewById(R.id.cvItalianFood); // creating a CardView and assigning a value.
-        card_view.setOnClickListener(new View.OnClickListener() {
+        View view =inflater.inflate(R.layout.fragment_fragment_italian_food, container, false);
+        Button btnAtras = (Button) view.findViewById(R.id.btnAtras); // creating a CardView and assigning a value.
+        btnAtras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.flFragment,new fragment_italian_food()).commit();
+                transaction.replace(R.id.flFragment,new fragment_start()).commit();
             }
         });
-        return view;
-    }
 
-    public void italian_food(View view){
-        view=getView();
-        //OBTENER CONTEXTO LUEGO OBTENER FRACMENTO
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.flFragment,new fragment_config()).commit();
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -104,7 +96,8 @@ public class fragment_start extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            Toast.makeText(context,R.string.start, Toast.LENGTH_SHORT).show();
+            /*throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");*/
         }
     }
 
@@ -113,7 +106,6 @@ public class fragment_start extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
 
     /**
      * This interface must be implemented by activities that contain this

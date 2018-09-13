@@ -47,9 +47,9 @@ public class menuprincipal extends AppCompatActivity {
         setContentView(R.layout.activity_menuprincipal);
 
         //CARGAR FRAME POR DEFECTO EL DE INICIO
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.flFragment,new fragment_start()).commit();
+        //FragmentManager fragmentManager = getSupportFragmentManager();
+        //FragmentTransaction transaction = fragmentManager.beginTransaction();
+        //transaction.replace(R.id.flFragment,new fragment_start()).commit();
 
         //CARGAR BARRA DE NAVEGACION INFERIOR
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);

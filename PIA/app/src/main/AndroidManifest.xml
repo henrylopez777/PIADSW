@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.henrylopez.fettapp">
 
+    <!-- PERMISOS PARA LA CAMARA -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <!--ACTIVITIES-->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,7 +24,6 @@
         </activity>
         <activity android:name=".inicio" />
         <activity android:name=".registro_user" />
-        <activity android:name=".iniciar_sesion" />
         <activity
             android:name=".menuprincipal"
             android:label="@string/title_activity_menuprincipal"></activity>
