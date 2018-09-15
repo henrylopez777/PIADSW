@@ -3,11 +3,11 @@
     package="com.example.henrylopez.fettapp">
 
     <!-- PERMISOS PARA LA CAMARA -->
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!--ACTIVITIES-->
+    <!-- ACTIVITIES -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,7 +26,9 @@
         <activity android:name=".registro_user" />
         <activity
             android:name=".menuprincipal"
-            android:label="@string/title_activity_menuprincipal"></activity>
+            android:label="@string/title_activity_menuprincipal" />
+        <activity android:name=".IntroActivity"></activity>
+        <activity android:name=".IntroAct"></activity>
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.example.henrylopez.fettapp;
 
 import android.content.Context;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -8,11 +9,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.example.henrylopez.fettapp.metodos.mPreferences;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +42,9 @@ public class fragment_start extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private RecyclerView rvPreferences;
+    private DatabaseReference mDatabase;
 
     public fragment_start() {
         // Required empty public constructor
@@ -63,15 +75,23 @@ public class fragment_start extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+    static FragmentManager fragmentManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View view = inflater.inflate(R.layout.fragment_fragment_start, container, false);
+       fragmentManager = getActivity().getSupportFragmentManager();
 
-       CardView card_view = (CardView) view.findViewById(R.id.cvItalianFood); // creating a CardView and assigning a value.
+       /**CardView card_view = (CardView) view.findViewById(R.id.cvItalianFood); // creating a CardView and assigning a value.
         card_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,16 +99,67 @@ public class fragment_start extends Fragment {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.flFragment,new fragment_italian_food()).commit();
             }
-        });
+        });*/
+
+        //CONEXION FIREBASE CONSULTA Y MOSTRAR DATOS
+        mDatabase= FirebaseDatabase.getInstance().getReference().child("Preferences");
+        mDatabase.keepSynced(true);
+        rvPreferences= (RecyclerView)view.findViewById(R.id.rvPreferences);
+        rvPreferences.setHasFixedSize(true);
+        rvPreferences.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        FirebaseRecyclerAdapter<mPreferences,mPreferencesViewHolder>firebaseRecyclerAdapter=
+                new FirebaseRecyclerAdapter<mPreferences, mPreferencesViewHolder>
+                        (mPreferences.class,R.layout.preferences_row,mPreferencesViewHolder.class,mDatabase) {
+                    @Override
+                    protected void populateViewHolder(mPreferencesViewHolder viewHolder, mPreferences model, int position) {
+                        viewHolder.setImage(getContext().getApplicationContext(),model.getImage());
+                        viewHolder.setOnClickListeners();
+                    }
+                    /*
+                    @Override
+                    public void onBindViewHolder(mPreferencesViewHolder viewHolder, int position) {
+                        //super.onBindViewHolder(viewHolder, position);
+                        viewHolder.setOnClickListeners();
+                    }*/
+                };
+        rvPreferences.setAdapter(firebaseRecyclerAdapter);
         return view;
     }
 
-    public void italian_food(View view){
-        view=getView();
-        //OBTENER CONTEXTO LUEGO OBTENER FRACMENTO
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.flFragment,new fragment_config()).commit();
+
+
+    public static class mPreferencesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener { //implements View.OnClickListener
+        View mView;
+        ImageView ivPreferences;
+        Context context;
+
+        public mPreferencesViewHolder(View itemView){
+            super(itemView);
+            mView=itemView;
+            context = itemView.getContext();
+        }
+
+        public void setImage(Context ctx, String image){
+            ImageView pref_img= (ImageView) mView.findViewById(R.id.ivPreferences);
+            Picasso.with(ctx).load(image).into(pref_img);
+            //pref_img.setId('1');
+        }
+
+        void setOnClickListeners(){
+            ivPreferences = (ImageView) mView.findViewById(R.id.ivPreferences);
+            ivPreferences.setOnClickListener(this);
+        }
+
+        //@Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.ivPreferences:
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.replace(R.id.flFragment,new fragment_italian_food()).commit();
+                    break;
+            }
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

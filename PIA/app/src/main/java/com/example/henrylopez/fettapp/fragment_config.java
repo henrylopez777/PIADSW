@@ -186,7 +186,7 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
 
                 }
                 if(opciones[i].equals("Elegir de Galeria")){
-                    Intent intent = new Intent(Intent.ACTION_PICK, //ACTION_GET_CONTENT
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT, //ACTION_GET_CONTENT
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/");
                     startActivityForResult(intent.createChooser(intent,"Seleccione"),SELECTION_CODE);
@@ -205,7 +205,6 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
         switch (requestCode){
             case SELECTION_CODE:
                 Uri miPath = data.getData();
-
                 /*SharedPreferences sharedPref = getContext().getSharedPreferences(STRING_SP_NAME,Context.MODE_PRIVATE );
                 String valor = sharedPref.getString("URI_FOTO", "");
                 if(valor!= ""){
@@ -217,8 +216,8 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                     mEditor.putString("URI_FOTO",miPath.toString());
                     mEditor.commit();
                 }*/
-
                 Glide.clear(ivUser);
+                Glide.with(this).load(miPath).into(ivUser);
                 ivUser.setImageURI(miPath);
                 break;
         }
