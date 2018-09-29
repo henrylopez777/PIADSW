@@ -186,7 +186,7 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
 
                 }
                 if(opciones[i].equals("Elegir de Galeria")){
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT, //ACTION_GET_CONTENT
+                    Intent intent = new Intent(Intent.ACTION_PICK, //ACTION_GET_CONTENT
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/");
                     startActivityForResult(intent.createChooser(intent,"Seleccione"),SELECTION_CODE);
@@ -217,10 +217,11 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                     mEditor.commit();
                 }*/
                 Glide.clear(ivUser);
-                Glide.with(this).load(miPath).into(ivUser);
+                Glide.with(getContext()).load(miPath).into(ivUser);
                 ivUser.setImageURI(miPath);
                 break;
         }
+
     }
 
     //QUITAR ACCESOS
@@ -279,7 +280,8 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
             String id_google_user = sharedPref.getString("ID_GOOGLE_USER","No hay dato");
             String id_google_photo = sharedPref.getString("ID_GOOGLE_USER_PHOTO","No hay dato");
             tvIdUser.setText(id_google_user);*/
-            Glide.with(this).load(account.getPhotoUrl()).into(ivUser);
+
+            //Glide.with(this).load(account.getPhotoUrl()).into(ivUser);
         }else{
             goLogInScreen();
         }

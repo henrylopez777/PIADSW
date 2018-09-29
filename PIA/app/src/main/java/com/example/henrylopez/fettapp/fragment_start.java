@@ -43,7 +43,9 @@ public class fragment_start extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    //RecyclerView
     private RecyclerView rvPreferences;
+    //Referencia de Base de datos
     private DatabaseReference mDatabase;
 
     public fragment_start() {
@@ -83,7 +85,10 @@ public class fragment_start extends Fragment {
         super.onStart();
 
     }
+
+    //Variable para administrar fragments
     static FragmentManager fragmentManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -104,13 +109,17 @@ public class fragment_start extends Fragment {
         //CONEXION FIREBASE CONSULTA Y MOSTRAR DATOS
         mDatabase= FirebaseDatabase.getInstance().getReference().child("Preferences");
         mDatabase.keepSynced(true);
+        //Declarar RecyclerView y asignarlo a una variable
         rvPreferences= (RecyclerView)view.findViewById(R.id.rvPreferences);
+        //Habilitar que RecyclerView para que se modifiqué segun el contenido del adaptador
         rvPreferences.setHasFixedSize(true);
         rvPreferences.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        //ADAPTADOR FIREBASE PARA POSTERIORMENTE ASIGNARLO A RECYCLERVIEW
         FirebaseRecyclerAdapter<mPreferences,mPreferencesViewHolder>firebaseRecyclerAdapter=
                 new FirebaseRecyclerAdapter<mPreferences, mPreferencesViewHolder>
                         (mPreferences.class,R.layout.preferences_row,mPreferencesViewHolder.class,mDatabase) {
+                    //mPreferences.class(Constructor), ASIGNAR LAS PREFERENCIAS DE COMO SERÁ DESPLEGADO, CLASE ASIGNADORA DE EVENTOS, BaseDatos
                     @Override
                     protected void populateViewHolder(mPreferencesViewHolder viewHolder, mPreferences model, int position) {
                         viewHolder.setImage(getContext().getApplicationContext(),model.getImage());
@@ -123,34 +132,37 @@ public class fragment_start extends Fragment {
                         viewHolder.setOnClickListeners();
                     }*/
                 };
+        //ASIGNARTODO AL RECYCLER VIEW
         rvPreferences.setAdapter(firebaseRecyclerAdapter);
         return view;
     }
-
-
 
     public static class mPreferencesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener { //implements View.OnClickListener
         View mView;
         ImageView ivPreferences;
         Context context;
 
+        //PROCEDIMIENTO PARA ASIGNAR
         public mPreferencesViewHolder(View itemView){
             super(itemView);
             mView=itemView;
             context = itemView.getContext();
         }
 
+        //PROCEDIMIENTO PARA ASIGNAR IMAGEN
         public void setImage(Context ctx, String image){
             ImageView pref_img= (ImageView) mView.findViewById(R.id.ivPreferences);
             Picasso.with(ctx).load(image).into(pref_img);
             //pref_img.setId('1');
         }
 
+        //ASIGNAR CLICK A CADA IMAGEVIEW
         void setOnClickListeners(){
             ivPreferences = (ImageView) mView.findViewById(R.id.ivPreferences);
             ivPreferences.setOnClickListener(this);
         }
 
+        //ASIGNAR EVENTO ONCLICK
         //@Override
         public void onClick(View view) {
             switch (view.getId()){
