@@ -6,11 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 //import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +36,8 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import java.io.File;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,8 +55,17 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    //VARIABLES PARA TOMA DE FOTO
+    private static final String CARPETA_PRINCIPAL="fett/";
+    private static final String CARPETA_IMAGEN="imagenes";
+    private static final String DIRECTORIO_IMAGEN=CARPETA_PRINCIPAL+CARPETA_IMAGEN;
+    private String pathImg;
+    File fileImagen;
+    Bitmap bitmapPic;
+
     private static final int SELECTION_CODE_PHOTO = 20 ;
     private static final int SELECTION_CODE = 10 ;
+
     //public static final String STRING_SP_NAME = registro_user.STRING_SP_NAME;
 
     // TODO: Rename and change types of parameters
@@ -95,6 +112,9 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //REVISAR
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder (); StrictMode.setVmPolicy (builder.build ());
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -183,7 +203,7 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(opciones[i].equals("Tomar Foto")){
-
+                    abrirCamara();
                 }
                 if(opciones[i].equals("Elegir de Galeria")){
                     Intent intent = new Intent(Intent.ACTION_PICK, //ACTION_GET_CONTENT
@@ -197,6 +217,38 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
             }
         });
         builder.show();
+    }
+
+    private void abrirCamara() {
+        File myFile= new File(Environment.getExternalStorageDirectory(),DIRECTORIO_IMAGEN);
+
+        boolean isCreated=myFile.exists();
+
+        if(isCreated==false){
+            isCreated=myFile.mkdirs();
+        }
+
+        if(isCreated==true){
+            Long consecutivo=System.currentTimeMillis()/1000;
+            String nombre=consecutivo.toString()+".jpg";
+            pathImg=Environment.getExternalStorageDirectory()+File.separator+DIRECTORIO_IMAGEN
+                    + File.separator+nombre; // ruta de almacenamiento
+
+            //Uri uriSavedImage = Uri.fromFile(new File(pathImg));
+
+            Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,Uri.fromFile(new File(pathImg)));
+
+            try {
+                startActivityForResult(intent,SELECTION_CODE_PHOTO);
+            }
+            catch (Exception e){
+                Toast.makeText(getContext(), "Error al abrir la cámara:"+e.toString(), Toast.LENGTH_SHORT)
+                        .show();
+                Log.e("Cámara ", e.toString());
+            }
+        }
+
     }
 
     @Override
@@ -220,7 +272,21 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                 Glide.with(getContext()).load(miPath).into(ivUser);
                 ivUser.setImageURI(miPath);
                 break;
+            case SELECTION_CODE_PHOTO:
+                MediaScannerConnection.scanFile(getContext(), new String[]{pathImg}, null,
+                        new MediaScannerConnection.OnScanCompletedListener() {
+                            @Override
+                            public void onScanCompleted(String pathImg, Uri uri) {
+                                Log.i("Path",""+pathImg);
+                            }
+                        });
+                bitmapPic=BitmapFactory.decodeFile(pathImg);
+                ivUser.setImageBitmap(bitmapPic);
+                //Glide.clear(ivUser);
+                //Glide.with(getContext()).load(pathImg).into(ivUser);
+                break;
         }
+
 
     }
 

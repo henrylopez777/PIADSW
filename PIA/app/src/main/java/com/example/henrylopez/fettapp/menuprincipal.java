@@ -17,21 +17,30 @@ public class menuprincipal extends AppCompatActivity {
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+        int i=1;
+        //METODO PARA LEER EL FRAGMENT
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            //METODO PARA LEER EL FRAGMENT
-            FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
+            //DETECTAR QUE ITEM ES SELECCIONADO PARA MOSTRAR EL FRAGMENT ADECUADO
             switch (item.getItemId()) {
                 case R.id.navigation_search:
                     transaction.replace(R.id.flFragment,new fragment_search()).commit();
+                    i=1;
                     return true;
                 case R.id.navigation_preferences: //INICIO O PREFERENCIAS
                     transaction.replace(R.id.flFragment,new fragment_start()).commit();
+                    i=1;
                     return true;
                 case R.id.navigation_config:
-                    transaction.replace(R.id.flFragment,new fragment_config()).commit();
-                    return true;
+                    if(i==1) {
+                        i=0;
+                        transaction.replace(R.id.flFragment, new fragment_config()).commit();
+                        return true;
+                    }
             }
             return false;
         }
