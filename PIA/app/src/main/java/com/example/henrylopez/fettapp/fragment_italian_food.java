@@ -3,23 +3,28 @@ package com.example.henrylopez.fettapp;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
+import com.example.henrylopez.fettapp.metodos.mRestaurantes;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link fragment_italian_food.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link fragment_italian_food#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.firebase.database.DatabaseReference;
+
 public class fragment_italian_food extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,18 +37,15 @@ public class fragment_italian_food extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    //RecyclerView
+    private RecyclerView rvPreferences;
+    //Referencia de Base de datos
+    private DatabaseReference mDatabase;
+
+
     public fragment_italian_food() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment fragment_italian_food.
-     */
     // TODO: Rename and change types and number of parameters
     public static fragment_italian_food newInstance(String param1, String param2) {
         fragment_italian_food fragment = new fragment_italian_food();
@@ -69,7 +71,9 @@ public class fragment_italian_food extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_fragment_italian_food, container, false);
-        Button btnAtras = (Button) view.findViewById(R.id.btnAtras); // creating a CardView and assigning a value.
+
+        /**BOTON ATRAS*/
+        Button btnAtras = (Button) view.findViewById(R.id.btnAtras);
         btnAtras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,9 +83,71 @@ public class fragment_italian_food extends Fragment {
             }
         });
 
+        //CONEXION FIREBASE CONSULTA Y MOSTRAR DATOS
+        mDatabase= FirebaseDatabase.getInstance().getReference().child("Snacks");
+        mDatabase.keepSynced(true);
+        //Declarar RecyclerView y asignarlo a una variable
+        rvPreferences= (RecyclerView)view.findViewById(R.id.rvRestaurants);
+        //Habilitar que RecyclerView para que se modifiqué segun el contenido del adaptador
+        rvPreferences.setHasFixedSize(true);
+        rvPreferences.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        //ADAPTADOR FIREBASE PARA POSTERIORMENTE ASIGNARLO A RECYCLERVIEW
+        FirebaseRecyclerAdapter<mRestaurantes,mRestaurantesViewHolder> firebaseRecyclerAdapter=
+                new FirebaseRecyclerAdapter<mRestaurantes, mRestaurantesViewHolder>
+                        (mRestaurantes.class,R.layout.restaurantes_row,mRestaurantesViewHolder.class,mDatabase) {
+                    @Override
+                    protected void populateViewHolder(mRestaurantesViewHolder viewHolder, mRestaurantes model, int position) {
+                        Log.i("dato", "populateViewHolder: " + model.getRestaurantDire());
+                        viewHolder.setRestaurantDire(model.getRestaurantDire());
+                        viewHolder.setRestaurantImage(getContext(),model.getImage());
+                        viewHolder.setRestaurantName(model.getRestaurantName());
+                        viewHolder.setRestaurantRating(model.getRestaurantRating());
+                    }
+                };
+        //ASIGNARTODO AL RECYCLER VIEW
+        rvPreferences.setAdapter(firebaseRecyclerAdapter);
         return view;
     }
+
+    public static class mRestaurantesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        View mView;
+        Context context;
+        public mRestaurantesViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mView=itemView;
+            context=itemView.getContext();
+        }
+
+        public void setRestaurantName(String restaurantName){
+            TextView restaurant_name=mView.findViewById(R.id.tvRestaurantName);
+            restaurant_name.setText(restaurantName);
+        }
+
+        public void setRestaurantDire(String restaurantDir){
+            TextView restaurant_Dir=(TextView)mView.findViewById(R.id.tvRestaurantDir);
+            restaurant_Dir.setText(restaurantDir);
+        }
+
+        public void setRestaurantRating(float restaurantRating){
+            RatingBar restaurant_Rating= mView.findViewById(R.id.rbRestaurantRating);
+            restaurant_Rating.setRating(restaurantRating);
+        }
+
+        public void setRestaurantImage(Context ctx,String restaurantImage){
+            ImageView restaurant_Image= mView.findViewById(R.id.ivRestaurant);
+            Picasso.with(ctx).load(restaurantImage).into(restaurant_Image);
+        }
+
+
+        @Override
+        public void onClick(View view) {
+
+        } //implements View.OnClickListener
+
+    }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

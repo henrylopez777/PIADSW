@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment_italian_food">
+    tools:context=".fragment_italian_food"
+    android:orientation="vertical"
+    android:layout_marginBottom="50dp">
 
     <!-- TODO: Update blank fragment layout -->
     <Button
@@ -11,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:background="@color/colorPrimary"
         android:fontFamily="@font/pt_sans_narrow"
@@ -21,13 +23,10 @@
         android:textColor="@color/fontWithe"
         android:textSize="25sp" />
 
-    <ListView
-        android:id="@+id/listView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvRestaurants"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="70sp"
-        android:scrollbars="vertical">
-
-    </ListView>
-
-</FrameLayout>
+        >
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

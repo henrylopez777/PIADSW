@@ -106,6 +106,7 @@ public class fragment_start extends Fragment {
             }
         });*/
 
+
         //CONEXION FIREBASE CONSULTA Y MOSTRAR DATOS
         mDatabase= FirebaseDatabase.getInstance().getReference().child("Preferences");
         mDatabase.keepSynced(true);
@@ -123,6 +124,7 @@ public class fragment_start extends Fragment {
                     @Override
                     protected void populateViewHolder(mPreferencesViewHolder viewHolder, mPreferences model, int position) {
                         viewHolder.setImage(getContext().getApplicationContext(),model.getImage());
+
                         viewHolder.setOnClickListeners();
                     }
                     /*
@@ -156,6 +158,10 @@ public class fragment_start extends Fragment {
             //pref_img.setId('1');
         }
 
+        public void setDesc(String desc){
+            
+        }
+
         //ASIGNAR CLICK A CADA IMAGEVIEW
         void setOnClickListeners(){
             ivPreferences = (ImageView) mView.findViewById(R.id.ivPreferences);
@@ -167,8 +173,15 @@ public class fragment_start extends Fragment {
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.ivPreferences:
+                    //CARGAR FRAGMENTO CON LA POSIBILIDAD DE REGRESO Y ENVIANDO PARÁMETROS
+                    Fragment fragment = new fragment_italian_food();
+                    Bundle args = new Bundle();
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
-                    transaction.replace(R.id.flFragment,new fragment_italian_food()).commit();
+                    args.putString("Snacks", "Snacks");
+                    fragment.setArguments(args);
+                    transaction.addToBackStack("start");
+                    transaction.replace(R.id.flFragment,fragment);
+                    transaction.commit();
                     break;
             }
         }

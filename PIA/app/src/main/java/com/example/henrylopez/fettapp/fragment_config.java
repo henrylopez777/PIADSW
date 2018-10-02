@@ -206,10 +206,14 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                     abrirCamara();
                 }
                 if(opciones[i].equals("Elegir de Galeria")){
-                    Intent intent = new Intent(Intent.ACTION_PICK, //ACTION_GET_CONTENT
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    intent.setType("image/");
-                    startActivityForResult(intent.createChooser(intent,"Seleccione"),SELECTION_CODE);
+                    try{
+                        Intent intent = new Intent(Intent.ACTION_PICK, //ACTION_GET_CONTENT
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        intent.setType("image/");
+                        startActivityForResult(intent.createChooser(intent,"Seleccione"),SELECTION_CODE);
+                    }catch (Exception e){
+                        Log.i("Cierre",e.toString());
+                    }
                 }
                 if(opciones[i].equals("Cancelar")){
                     dialogInterface.dismiss();
@@ -254,39 +258,42 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
-            case SELECTION_CODE:
-                Uri miPath = data.getData();
-                /*SharedPreferences sharedPref = getContext().getSharedPreferences(STRING_SP_NAME,Context.MODE_PRIVATE );
-                String valor = sharedPref.getString("URI_FOTO", "");
-                if(valor!= ""){
-                    Glide.clear(ivUser);
-                    ivUser.setImageURI(Uri.parse(valor));
-                }else
-                {
-                    SharedPreferences.Editor mEditor = sharedPref.edit();
-                    mEditor.putString("URI_FOTO",miPath.toString());
-                    mEditor.commit();
-                }*/
-                Glide.clear(ivUser);
-                Glide.with(getContext()).load(miPath).into(ivUser);
-                ivUser.setImageURI(miPath);
-                break;
-            case SELECTION_CODE_PHOTO:
-                MediaScannerConnection.scanFile(getContext(), new String[]{pathImg}, null,
-                        new MediaScannerConnection.OnScanCompletedListener() {
-                            @Override
-                            public void onScanCompleted(String pathImg, Uri uri) {
-                                Log.i("Path",""+pathImg);
-                            }
-                        });
-                bitmapPic=BitmapFactory.decodeFile(pathImg);
-                ivUser.setImageBitmap(bitmapPic);
-                //Glide.clear(ivUser);
-                //Glide.with(getContext()).load(pathImg).into(ivUser);
-                break;
-        }
-
+            switch (requestCode) {
+                case SELECTION_CODE:
+                    try {
+                        Uri miPath = data.getData();
+                    /*SharedPreferences sharedPref = getContext().getSharedPreferences(STRING_SP_NAME,Context.MODE_PRIVATE );
+                    String valor = sharedPref.getString("URI_FOTO", "");
+                    if(valor!= ""){
+                        Glide.clear(ivUser);
+                        ivUser.setImageURI(Uri.parse(valor));
+                    }else
+                    {
+                        SharedPreferences.Editor mEditor = sharedPref.edit();
+                        mEditor.putString("URI_FOTO",miPath.toString());
+                        mEditor.commit();
+                    }*/
+                        Glide.clear(ivUser);
+                        Glide.with(getContext()).load(miPath).into(ivUser);
+                        ivUser.setImageURI(miPath);
+                    }catch (Exception e) {
+                        Toast.makeText(getContext(),"Cancelado",Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case SELECTION_CODE_PHOTO:
+                    MediaScannerConnection.scanFile(getContext(), new String[]{pathImg}, null,
+                            new MediaScannerConnection.OnScanCompletedListener() {
+                                @Override
+                                public void onScanCompleted(String pathImg, Uri uri) {
+                                    Log.i("Path", "" + pathImg);
+                                }
+                            });
+                    bitmapPic = BitmapFactory.decodeFile(pathImg);
+                    ivUser.setImageBitmap(bitmapPic);
+                    //Glide.clear(ivUser);
+                    //Glide.with(getContext()).load(pathImg).into(ivUser);
+                    break;
+            }
 
     }
 
@@ -355,9 +362,9 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
 
     //Regresar al menu principal
     private void goLogInScreen() {
-        Intent intent = new Intent(getContext(),registro_user.class);
+       /* Intent intent = new Intent(getContext(),registro_user.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     // TODO: Rename method, update argument and hook method into UI event
