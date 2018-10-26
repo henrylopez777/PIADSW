@@ -20,12 +20,14 @@
     <string name="IntPass">Introduce tu contraseña</string>
     <string name="not_log_in">No se pudo iniciar sesión</string>
     <string name="title_activity_menuprincipal">menuprincipal</string>
-    <string name="title_home">Buscar</string>
+    <string name="title_home">Noticias</string>
     <string name="title_dashboard">Inicio</string>
     <string name="title_notifications">Configuración</string>
+
     <string name="config">Configuración</string>
     <string name="start">Inicio</string>
-    <string name="search">Buscar</string>
+    <string name="search">Noticias</string>
+
     <string name="revokeaccess">Error al revocar el acceso</string>
     <string name="err_close_sesion">Error al cerrar sesión</string>
     <!--Pantalla preferencias-->

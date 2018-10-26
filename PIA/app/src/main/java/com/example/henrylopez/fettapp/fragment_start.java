@@ -9,8 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.example.henrylopez.fettapp.metodos.mPreferences;
+import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -93,7 +96,7 @@ public class fragment_start extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view = inflater.inflate(R.layout.fragment_fragment_start, container, false);
+       final View view = inflater.inflate(R.layout.fragment_fragment_start, container, false);
        fragmentManager = getActivity().getSupportFragmentManager();
 
        /**CardView card_view = (CardView) view.findViewById(R.id.cvItalianFood); // creating a CardView and assigning a value.
@@ -106,10 +109,16 @@ public class fragment_start extends Fragment {
             }
         });*/
 
-
         //CONEXION FIREBASE CONSULTA Y MOSTRAR DATOS
-        mDatabase= FirebaseDatabase.getInstance().getReference().child("Preferences");
+        mDatabase= FirebaseDatabase.getInstance().getReference();
+        Query filtro=mDatabase.child("Preferences");
+
+        //Los siguientes filtros son para devolver un unico valor será usado a la hora de traer restaurantes
+        //Query filtro=mDatabase.child("Preferences").orderByKey().equalTo("100");
+        //Query filtro=mDatabase.child("Preferences").orderByChild("Desc").equalTo("Snacks");
         mDatabase.keepSynced(true);
+
+
         //Declarar RecyclerView y asignarlo a una variable
         rvPreferences= (RecyclerView)view.findViewById(R.id.rvPreferences);
         //Habilitar que RecyclerView para que se modifiqué segun el contenido del adaptador
@@ -119,30 +128,35 @@ public class fragment_start extends Fragment {
         //ADAPTADOR FIREBASE PARA POSTERIORMENTE ASIGNARLO A RECYCLERVIEW
         FirebaseRecyclerAdapter<mPreferences,mPreferencesViewHolder>firebaseRecyclerAdapter=
                 new FirebaseRecyclerAdapter<mPreferences, mPreferencesViewHolder>
-                        (mPreferences.class,R.layout.preferences_row,mPreferencesViewHolder.class,mDatabase) {
+                        (mPreferences.class,R.layout.preferences_row,mPreferencesViewHolder.class,filtro) {
                     //mPreferences.class(Constructor), ASIGNAR LAS PREFERENCIAS DE COMO SERÁ DESPLEGADO, CLASE ASIGNADORA DE EVENTOS, BaseDatos
                     @Override
                     protected void populateViewHolder(mPreferencesViewHolder viewHolder, mPreferences model, int position) {
                         viewHolder.setImage(getContext().getApplicationContext(),model.getImage());
-
-                        viewHolder.setOnClickListeners();
+                        viewHolder.setDesc(model.getDesc());
+                        //viewHolder.setOnClickListeners();
                     }
-                    /*
+
                     @Override
                     public void onBindViewHolder(mPreferencesViewHolder viewHolder, int position) {
-                        //super.onBindViewHolder(viewHolder, position);
+                        super.onBindViewHolder(viewHolder, position);
                         viewHolder.setOnClickListeners();
-                    }*/
+                    }
                 };
         //ASIGNARTODO AL RECYCLER VIEW
+        rvlayoutManager=new GridLayoutManager(getContext(), 2);
+        rvPreferences.setLayoutManager(rvlayoutManager);
         rvPreferences.setAdapter(firebaseRecyclerAdapter);
+
+
         return view;
     }
 
+    RecyclerView.LayoutManager rvlayoutManager;
     public static class mPreferencesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener { //implements View.OnClickListener
         View mView;
-        ImageView ivPreferences;
         Context context;
+        ImageView ivPreferences;
 
         //PROCEDIMIENTO PARA ASIGNAR
         public mPreferencesViewHolder(View itemView){
@@ -158,8 +172,9 @@ public class fragment_start extends Fragment {
             //pref_img.setId('1');
         }
 
-        public void setDesc(String desc){
-            
+        public void setDesc(String Desc){
+            ImageView pref_img= (ImageView) mView.findViewById(R.id.ivPreferences);
+            pref_img.setContentDescription(Desc);
         }
 
         //ASIGNAR CLICK A CADA IMAGEVIEW
@@ -171,15 +186,17 @@ public class fragment_start extends Fragment {
         //ASIGNAR EVENTO ONCLICK
         //@Override
         public void onClick(View view) {
+            Log.i("hola",String.valueOf(ivPreferences.getContentDescription()));
             switch (view.getId()){
                 case R.id.ivPreferences:
                     //CARGAR FRAGMENTO CON LA POSIBILIDAD DE REGRESO Y ENVIANDO PARÁMETROS
                     Fragment fragment = new fragment_italian_food();
                     Bundle args = new Bundle();
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
-                    args.putString("Snacks", "Snacks");
+                    args.putString("Selection", (String) ivPreferences.getContentDescription());
                     fragment.setArguments(args);
-                    transaction.addToBackStack("start");
+                    //transaction.addToBackStack("start");
+                    transaction.disallowAddToBackStack();
                     transaction.replace(R.id.flFragment,fragment);
                     transaction.commit();
                     break;

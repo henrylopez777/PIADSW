@@ -1,29 +1,41 @@
 package com.example.henrylopez.fettapp;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 import com.example.henrylopez.fettapp.metodos.mRestaurantes;
 
 import com.google.firebase.database.DatabaseReference;
+
+import org.w3c.dom.Text;
 
 public class fragment_italian_food extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -41,7 +53,7 @@ public class fragment_italian_food extends Fragment {
     private RecyclerView rvPreferences;
     //Referencia de Base de datos
     private DatabaseReference mDatabase;
-
+    Bundle bundle;
 
     public fragment_italian_food() {
         // Required empty public constructor
@@ -63,17 +75,35 @@ public class fragment_italian_food extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
+    ImageView btnRatingF, btnLocationF;
+    TextView tvDescFilt;
+    String selection;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_fragment_italian_food, container, false);
 
+        bundle=getArguments();
+        selection=bundle.getString("Selection");
+        tvDescFilt=view.findViewById(R.id.tvFilterSelection);
+        tvDescFilt.setText(selection);
+
+        btnLocationF=view.findViewById(R.id.ivBtnLocationFilter);
+        btnRatingF=view.findViewById(R.id.ivBtnRatingFilter);
+        btnRatingF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //filtro_rating();
+                createRadioListDialog();
+            }
+        });
+
+
         /**BOTON ATRAS*/
-        Button btnAtras = (Button) view.findViewById(R.id.btnAtras);
+        ImageView btnAtras = (ImageView) view.findViewById(R.id.ivBtnBack);
         btnAtras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,7 +114,20 @@ public class fragment_italian_food extends Fragment {
         });
 
         //CONEXION FIREBASE CONSULTA Y MOSTRAR DATOS
-        mDatabase= FirebaseDatabase.getInstance().getReference().child("Snacks");
+
+        /*CAMBIAR LA VARIABLE DE SELECCION A CONSTANTE LLAMADA RESTAURANTE
+        * EN FIREBASE CAMBIAR SNACK POR RESTAURANTE
+        * AÑADIR NODO DE CATEGORIA
+        * MODIFICAR MRESTAURANTE.CLASS PARA ACEPTAR CATEGORIA getters and setters
+        * MODIFICAR EQUALS A SELECCIÓN POR SER LA VARIABLE QUE ME DETECTA QUE IMAGEVIEW FUE SELECCIONADO
+        *
+        * --FILTRADOS
+        * AÑADIR NODO DE MUNICIPIO PARA POSTERIOR FILTRADO
+        * Y AÑADIR CODIGO PARA FILTRADO POR PUNTUACIÓN
+        *
+        * */
+        mDatabase= FirebaseDatabase.getInstance().getReference().child("Restaurants");
+        Query query = mDatabase.orderByChild("Category").equalTo(selection);
         mDatabase.keepSynced(true);
         //Declarar RecyclerView y asignarlo a una variable
         rvPreferences= (RecyclerView)view.findViewById(R.id.rvRestaurants);
@@ -95,7 +138,7 @@ public class fragment_italian_food extends Fragment {
         //ADAPTADOR FIREBASE PARA POSTERIORMENTE ASIGNARLO A RECYCLERVIEW
         FirebaseRecyclerAdapter<mRestaurantes,mRestaurantesViewHolder> firebaseRecyclerAdapter=
                 new FirebaseRecyclerAdapter<mRestaurantes, mRestaurantesViewHolder>
-                        (mRestaurantes.class,R.layout.restaurantes_row,mRestaurantesViewHolder.class,mDatabase) {
+                        (mRestaurantes.class,R.layout.restaurantes_row,mRestaurantesViewHolder.class,query) {
                     @Override
                     protected void populateViewHolder(mRestaurantesViewHolder viewHolder, mRestaurantes model, int position) {
                         Log.i("dato", "populateViewHolder: " + model.getRestaurantDire());
@@ -104,10 +147,87 @@ public class fragment_italian_food extends Fragment {
                         viewHolder.setRestaurantName(model.getRestaurantName());
                         viewHolder.setRestaurantRating(model.getRestaurantRating());
                     }
+
+                    @Override
+                    public void onBindViewHolder(mRestaurantesViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.setOnClickListeners();
+                    }
                 };
         //ASIGNARTODO AL RECYCLER VIEW
         rvPreferences.setAdapter(firebaseRecyclerAdapter);
         return view;
+    }
+
+
+    private void filtro_rating(String stars){
+        View view=getView();
+        mDatabase= FirebaseDatabase.getInstance().getReference().child("Restaurants");
+        Query query;
+        if(stars.equals("Desactivar Filtro")){
+            query = mDatabase.orderByChild("Category").equalTo(selection);
+        }else {
+            query = mDatabase.orderByChild("CatRat").startAt(selection + stars).endAt(selection + stars);
+        }
+        mDatabase.keepSynced(true);
+        //Declarar RecyclerView y asignarlo a una variable
+        rvPreferences= (RecyclerView)view.findViewById(R.id.rvRestaurants);
+        //Habilitar que RecyclerView para que se modifiqué segun el contenido del adaptador
+        rvPreferences.setHasFixedSize(true);
+        rvPreferences.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //ADAPTADOR FIREBASE PARA POSTERIORMENTE ASIGNARLO A RECYCLERVIEW
+        FirebaseRecyclerAdapter<mRestaurantes,mRestaurantesViewHolder> firebaseRecyclerAdapter=
+                new FirebaseRecyclerAdapter<mRestaurantes, mRestaurantesViewHolder>
+                        (mRestaurantes.class,R.layout.restaurantes_row,mRestaurantesViewHolder.class,query) {
+                    @Override
+                    protected void populateViewHolder(mRestaurantesViewHolder viewHolder, mRestaurantes model, int position) {
+                        viewHolder.setRestaurantDire(model.getRestaurantDire());
+                        viewHolder.setRestaurantImage(getContext(),model.getImage());
+                        viewHolder.setRestaurantName(model.getRestaurantName());
+                        viewHolder.setRestaurantRating(model.getRestaurantRating());
+                    }
+                    @Override
+                    public void onBindViewHolder(mRestaurantesViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.setOnClickListeners();
+                    }
+                };
+        //ASIGNARTODO AL RECYCLER VIEW
+        rvPreferences.setAdapter(firebaseRecyclerAdapter);
+        LinearLayoutManager mLay= new LinearLayoutManager(getActivity());
+        mLay.setReverseLayout(true);
+        mLay.setStackFromEnd(true);
+        rvPreferences.setLayoutManager(mLay);
+    }
+
+    public AlertDialog createRadioListDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        final CharSequence[] items = new CharSequence[6];
+
+        items[0] = "1";
+        items[1] = "2";
+        items[2] = "3";
+        items[3] = "4";
+        items[4] = "5";
+        items[5] = "Desactivar Filtro";
+
+        builder.setTitle("Selecciona cantidad de estrellas")
+                .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(
+                                getActivity(),
+                                "Seleccionaste: " + items[which],
+                                Toast.LENGTH_SHORT)
+                                .show();
+                        String stars= String.valueOf(items[which]);
+                        filtro_rating(stars);
+                    }
+                });
+
+        return builder.show();
     }
 
     public static class mRestaurantesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -139,12 +259,24 @@ public class fragment_italian_food extends Fragment {
             Picasso.with(ctx).load(restaurantImage).into(restaurant_Image);
         }
 
+        public void setOnClickListeners()
+        {
+            CardView cv=(CardView) mView.findViewById(R.id.cvRestaurante);
+            cv.setOnClickListener(this);
+        }
 
         @Override
         public void onClick(View view) {
-
+            switch (view.getId()){
+                case R.id.cvRestaurante:
+                    TextView tv=view.findViewById(R.id.tvRestaurantName);
+                    //Log.i("holita",tv.getText().toString());
+                    Intent intent = new Intent(context,restaurant.class);
+                    intent.putExtra("restaurant",tv.getText().toString());
+                    context.startActivity(intent);
+                    break;
+            }
         } //implements View.OnClickListener
-
     }
 
 

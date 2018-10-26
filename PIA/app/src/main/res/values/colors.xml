@@ -9,5 +9,11 @@
     <color name="colorAccent">#bf0411</color>
 
     <color name="fontWithe">#FFFFFF</color>
+    <color name="fontWitheTrans">#B3FFFFFF</color>
     <color name="fontBlack">#000000</color>
+
+    <color name="menuColor">#18191a</color>
+    <color name="fondoColor">#121212</color>
+    <color name="iconGrayColor">#303030</color>
+
 </resources>

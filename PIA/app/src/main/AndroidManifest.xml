@@ -17,19 +17,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".splashscreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".splashscreen"></activity>
         <activity android:name=".inicio" />
         <activity android:name=".registro_user" />
         <activity
             android:name=".menuprincipal"
-            android:label="@string/title_activity_menuprincipal" />
-        <activity android:name=".IntroActivity"></activity>
-        <activity android:name=".IntroAct"></activity>
+            android:label="FettApp"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".IntroActivity" />
+        <activity android:name=".IntroAct" />
+        <activity android:name=".restaurant"></activity>
     </application>
 
 </manifest>

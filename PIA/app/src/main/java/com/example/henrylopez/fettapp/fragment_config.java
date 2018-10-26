@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 //import android.content.SharedPreferences;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
@@ -37,6 +38,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
 import java.io.File;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -139,10 +142,10 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
     @Override
     public void onStop() {
         super.onStop();
-        if (googleApiClient != null && googleApiClient.isConnected()) {
+        /*if (googleApiClient != null && googleApiClient.isConnected()) {
             googleApiClient.stopAutoManage(getActivity());
             googleApiClient.disconnect();
-        }
+        }*/
     }
 
     @Override
@@ -170,14 +173,14 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
         });
 
         //BOTON Revocar Accesos
-        btnRevokeSesion=vista.findViewById(R.id.btnRemoveAccess);
-        btnRevokeSesion.setOnClickListener(new View.OnClickListener() {
+        //btnRevokeSesion=vista.findViewById(R.id.btnRemoveAccess);
+        /*btnRevokeSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RevokeAccessGoogle(vista);
             }
         });
-
+        */
         ivUser = (ImageView)vista.findViewById(R.id.ivUser);
         tvNombre = (TextView)vista.findViewById(R.id.tvNombre);
         tvEmail=(TextView)vista.findViewById(R.id.tvCorreo);
@@ -294,12 +297,12 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                     //Glide.with(getContext()).load(pathImg).into(ivUser);
                     break;
             }
-
+        googleApiClient.connect();
     }
 
     //QUITAR ACCESOS
     private void RevokeAccessGoogle(View vista) {
-        Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+       /* Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
                 if(status.isSuccess()) {
@@ -308,7 +311,7 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                     Toast.makeText(getContext(), R.string.revokeaccess,Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
     }
 
     private void LogOutSesionGoogle(View vista) {
@@ -362,9 +365,11 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
 
     //Regresar al menu principal
     private void goLogInScreen() {
-       /* Intent intent = new Intent(getContext(),registro_user.class);
+        Intent intent = new Intent(getContext(),registro_user.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);*/
+        SharedPreferences.Editor ed=getContext().getSharedPreferences("User",MODE_PRIVATE).edit();
+        ed.remove("id").commit();
+        startActivity(intent);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

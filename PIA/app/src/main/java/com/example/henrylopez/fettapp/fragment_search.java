@@ -1,13 +1,35 @@
 package com.example.henrylopez.fettapp;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.henrylopez.fettapp.metodos.mPreferences;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.example.henrylopez.fettapp.metodos.mNews;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -29,6 +51,9 @@ public class fragment_search extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private RecyclerView rvNews;
+    private DatabaseReference mDatabase;
 
     public fragment_search() {
         // Required empty public constructor
@@ -65,7 +90,88 @@ public class fragment_search extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fragment_search, container, false);
+        final View view =inflater.inflate(R.layout.fragment_fragment_search, container, false);
+
+
+        //CONEXION FIREBASE CONSULTA Y MOSTRAR DATOS
+
+        mDatabase= FirebaseDatabase.getInstance().getReference();
+        Query filtro=mDatabase.child("News");
+        mDatabase.keepSynced(true);
+        //Declarar RecyclerView y asignarlo a una variable
+        rvNews=(RecyclerView)view.findViewById(R.id.rvNews);
+        //Habilitar que RecyclerView para que se modifiqué segun el contenido del adaptador
+        rvNews.setHasFixedSize(true);
+        rvNews.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //ADAPTADOR FIREBASE PARA POSTERIORMENTE ASIGNARLO A RECYCLERVIEW
+        FirebaseRecyclerAdapter<mNews,mNewsViewHolder> firebaseRecyclerAdapter=
+                new FirebaseRecyclerAdapter<mNews, mNewsViewHolder>
+                        (mNews.class, R.layout.preferences_news, mNewsViewHolder.class, filtro) {
+                    @Override
+                    protected void populateViewHolder(mNewsViewHolder viewHolder, mNews model, int position) {
+                        viewHolder.setContent(model.getContent());
+                        viewHolder.setTitle(model.getTitle());
+                        viewHolder.setImage(getContext().getApplicationContext(),model.getImage());
+                    }
+                };
+        rvNews.setAdapter(firebaseRecyclerAdapter);
+        /*filtro.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                notificacion = new NotificationCompat.Builder(getActivity());
+                    notificacion.setAutoCancel(true);
+                    notificacion.setSmallIcon(R.drawable.fett_iconsm);
+                    notificacion.setTicker("Nueva Notificación");
+                    notificacion.setWhen(System.currentTimeMillis());
+                    notificacion.setContentTitle("Ejemplo");
+                    notificacion.setContentText("Ejemplo");
+                //Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage("com.example.henrylopez.fettapp.fragment_search");
+
+                //PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                //notificacion.setContentIntent(pendingIntent);
+                    NotificationManager nm = (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+                    nm.notify(idUnica,notificacion.build());
+
+
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+        return view;
+
+    }
+
+    NotificationCompat.Builder notificacion;
+    private static final int idUnica=777;
+    public static class mNewsViewHolder extends RecyclerView.ViewHolder{
+        View mView;
+        Context context;
+
+        public mNewsViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mView=itemView;
+            context=itemView.getContext();
+        }
+
+        public void setImage(Context ctx, String image){
+            ImageView ivNews=mView.findViewById(R.id.ivNews);
+            Picasso.with(ctx).load(image).into(ivNews);
+        }
+
+        public void setTitle(String Title){
+            TextView tvTitle=mView.findViewById(R.id.tvTitle);
+            tvTitle.setText(Title);
+        }
+
+        public void setContent(String Content){
+            TextView tvContent=mView.findViewById(R.id.tvContent);
+            tvContent.setText(Content);
+        }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -83,8 +189,9 @@ public class fragment_search extends Fragment {
         } else {
             Toast.makeText(context, R.string.search, Toast.LENGTH_SHORT).show();
         }
+        mContext=context;
     }
-
+    Context mContext;
     @Override
     public void onDetach() {
         super.onDetach();

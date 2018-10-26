@@ -3,6 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:theme="@style/Theme.AppCompat.NoActionBar"
     android:layout_height="match_parent"
-    android:background="@drawable/sl_1">
+    android:background="@drawable/slide01">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/texto01"
+        android:scaleType="fitXY"/>
 
 </android.support.constraint.ConstraintLayout>

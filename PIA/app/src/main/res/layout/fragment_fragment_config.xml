@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment_config"
+    android:background="@color/fondoColor"
     >
 
     <!-- TODO: Update blank fragment layout -->
@@ -26,7 +27,8 @@
             android:id="@+id/tvNombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
+            tools:text="@string/app_name"
+            android:textColor="@color/fontWithe"
             android:textAlignment="center"
             android:textSize="30dp"
             android:fontFamily="@font/pt_sans_narrow_bold"
@@ -36,19 +38,22 @@
             android:id="@+id/tvCorreo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
+            tools:text="@string/app_name"
             android:textAlignment="center"
             android:textSize="25dp"
             android:fontFamily="@font/pt_sans_narrow"
+            android:textColor="@color/fontWithe"
             />
         <TextView
             android:id="@+id/tvIdUsuario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
+            tools:text="@string/app_name"
             android:textAlignment="center"
             android:textSize="15dp"
             android:fontFamily="@font/pt_sans_narrow"
+            android:layout_marginBottom="30sp"
+            android:textColor="@color/fontWithe"
             />
 
         <Button
@@ -68,7 +73,7 @@
             android:textAllCaps="false"
             android:textColor="@color/fontWithe"
             android:textSize="25sp"  />
-        <Button
+        <!--<Button
             android:id="@+id/btnTomarPicture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,10 +89,10 @@
             android:text="Tomar Foto"
             android:textAllCaps="false"
             android:textColor="@color/fontWithe"
-            android:textSize="25sp"  />
+            android:textSize="25sp"  />-->
         <Button
             android:id="@+id/btnCloseSesion"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="20dp"
@@ -95,6 +100,7 @@
             android:layout_marginTop="1dp"
             android:background="@color/colorPrimary"
             android:fontFamily="@font/pt_sans_narrow"
+            android:drawableStart="@drawable/ic_vpn_key_black_24dp"
             android:paddingEnd="50dp"
             android:paddingLeft="50dp"
             android:text="Cerrar Sesión"
@@ -103,7 +109,7 @@
             android:textSize="25sp"
             android:layout_gravity="center"/>
 
-        <Button
+        <!--<Button
             android:id="@+id/btnRemoveAccess"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
@@ -117,7 +123,7 @@
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
             android:textSize="25sp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"/>-->
     </LinearLayout>
 
 </FrameLayout>

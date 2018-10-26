@@ -87,16 +87,21 @@ public class registro_user extends AppCompatActivity implements GoogleApiClient.
             mEditor.putString("ID_GOOGLE_USER_PHOTO",account.getPhotoUrl().toString());
             mEditor.commit();
             */
+            GoogleSignInAccount account = result.getSignInAccount();
+            id=account.getId();
             goMainScreen();
         }else{
             Toast.makeText(this, R.string.not_log_in, Toast.LENGTH_SHORT).show();
         }
 
     }
-
+    String id;
     private void goMainScreen() {
         Intent intent = new Intent(this,menuprincipal.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        SharedPreferences.Editor ed=getSharedPreferences("User",MODE_PRIVATE).edit();
+        ed.putString("id",id);
+        ed.apply();
         startActivity(intent);
     }
 }
