@@ -1,5 +1,6 @@
 package com.example.henrylopez.fettapp;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -10,9 +11,9 @@ import android.support.v4.content.ContextCompat;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntroFragment;
-
 
 
 public class IntroActivity extends AppIntro {
@@ -23,13 +24,16 @@ public class IntroActivity extends AppIntro {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide(); //OCULTAR BARRA DE TITULO
-
+        askForPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.INTERNET}, 2);
         //AÑADIR SLIDERS
         addSlide(SampleSlide.newInstance(R.layout.slider_1));
         addSlide(SampleSlide.newInstance(R.layout.slider_2));
         addSlide(SampleSlide.newInstance(R.layout.slider_3));
         //addSlide(SampleSlide.newInstance(R.layout.activity_registro_user));
-        setDepthAnimation ();
+        setFadeAnimation ();
+
+
+
     }
 
     @Override
@@ -44,7 +48,7 @@ public class IntroActivity extends AppIntro {
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
-        Intent intent = new Intent(this,inicio.class);
+        Intent intent = new Intent(this,registro_user.class);
         startActivity(intent);
     }
 
@@ -52,7 +56,7 @@ public class IntroActivity extends AppIntro {
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
-        Intent intent = new Intent(this,inicio.class);
+        Intent intent = new Intent(this,registro_user.class);
         startActivity(intent);
     }
 }

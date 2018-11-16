@@ -1,0 +1,42 @@
+<html>
+<head>
+  <title>Firebase Login</title>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="login_div" class="main-div">
+  	<img src="fett_iconsm_map.png" alt="" class="imgs">
+    <h3>Iniciar Sesión</h3>
+    <input type="email" placeholder="Email..." id="email_field" />
+    <input type="password" placeholder="Contraseña..." id="password_field" />
+
+    <button onclick="login()">Iniciar Sesión</button>
+  </div>
+
+  <div id="user_div" class="loggedin-div">
+    <h3>Bienvenido Usuario</h3>
+    <p id="user_para">Welcome to Firebase web login Example. You're currently logged in.</p>
+    <button onclick="logout()">Cerrar Sesión</button>
+  </div>
+<script src="https://www.gstatic.com/firebasejs/5.5.5/firebase.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-database.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCUzyfIDGajBnYL8T2wzFsKU2sSlHVwvKU",
+    authDomain: "fettapp-fb465.firebaseapp.com",
+    databaseURL: "https://fettapp-fb465.firebaseio.com",
+    projectId: "fettapp-fb465",
+    storageBucket: "fettapp-fb465.appspot.com",
+    messagingSenderId: "903869939396"
+  };
+  firebase.initializeApp(config);
+</script>
+  <script src="index.js"></script>
+
+</body>
+</html>

@@ -4,6 +4,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -114,6 +117,12 @@ public class fragment_search extends Fragment {
                         viewHolder.setTitle(model.getTitle());
                         viewHolder.setImage(getContext().getApplicationContext(),model.getImage());
                     }
+
+                    @Override
+                    public void onBindViewHolder(mNewsViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.setOnClickListeners();
+                    }
                 };
         rvNews.setAdapter(firebaseRecyclerAdapter);
         /*filtro.addValueEventListener(new ValueEventListener() {
@@ -147,7 +156,7 @@ public class fragment_search extends Fragment {
 
     NotificationCompat.Builder notificacion;
     private static final int idUnica=777;
-    public static class mNewsViewHolder extends RecyclerView.ViewHolder{
+    public static class mNewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         View mView;
         Context context;
 
@@ -160,6 +169,7 @@ public class fragment_search extends Fragment {
         public void setImage(Context ctx, String image){
             ImageView ivNews=mView.findViewById(R.id.ivNews);
             Picasso.with(ctx).load(image).into(ivNews);
+            ivNews.setContentDescription(image);
         }
 
         public void setTitle(String Title){
@@ -170,6 +180,40 @@ public class fragment_search extends Fragment {
         public void setContent(String Content){
             TextView tvContent=mView.findViewById(R.id.tvContent);
             tvContent.setText(Content);
+        }
+
+        public void setOnClickListeners(){
+            ImageView shareNew = mView.findViewById(R.id.btnShareNew);
+            shareNew.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.btnShareNew:
+                        onClickWhatsApp();
+                    break;
+            }
+        }
+
+        public void onClickWhatsApp() {
+            Toast.makeText(context, "Compartir...", Toast.LENGTH_SHORT).show();
+            PackageManager pm=context.getPackageManager();
+            String url = (String) mView.findViewById(R.id.ivNews).getContentDescription();
+            try {
+                Intent waIntent = new Intent(Intent.ACTION_SEND);
+                String text = "*¡Ya viste la promoción!*\n¿Vamos o que?\n\n" + url + "\n*Enviado desde FettApp*"; //+"\n\n*Enviado desde FettApp* \n\n https://fettapp.000webhostapp.com/";
+                PackageInfo info=pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+                waIntent.setPackage("com.whatsapp");
+                waIntent.setType("text/plain");
+                waIntent.putExtra(Intent.EXTRA_TEXT, text);
+                context.startActivity(Intent.createChooser(waIntent, "Compartir Con"));
+
+            } catch (PackageManager.NameNotFoundException e) {
+                Toast.makeText(context, "WhatsApp no está instalado", Toast.LENGTH_SHORT)
+                        .show();
+            }
+
         }
 
     }
@@ -187,7 +231,7 @@ public class fragment_search extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            Toast.makeText(context, R.string.search, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.search, Toast.LENGTH_SHORT);
         }
         mContext=context;
     }

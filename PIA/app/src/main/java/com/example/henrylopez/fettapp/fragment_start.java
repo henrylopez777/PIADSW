@@ -110,6 +110,7 @@ public class fragment_start extends Fragment {
         });*/
 
         //CONEXION FIREBASE CONSULTA Y MOSTRAR DATOS
+
         mDatabase= FirebaseDatabase.getInstance().getReference();
         Query filtro=mDatabase.child("Preferences");
 
@@ -191,6 +192,7 @@ public class fragment_start extends Fragment {
                 case R.id.ivPreferences:
                     //CARGAR FRAGMENTO CON LA POSIBILIDAD DE REGRESO Y ENVIANDO PARÁMETROS
                     Fragment fragment = new fragment_italian_food();
+                    Fragment fragment1 = new fragment_start();
                     Bundle args = new Bundle();
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
                     args.putString("Selection", (String) ivPreferences.getContentDescription());
@@ -198,6 +200,18 @@ public class fragment_start extends Fragment {
                     //transaction.addToBackStack("start");
                     transaction.disallowAddToBackStack();
                     transaction.replace(R.id.flFragment,fragment);
+                    /*if (fragment.isAdded()) {
+                        transaction
+                                .hide(fragment1);
+                                .show(fragment);
+                    } else {
+                        transaction
+                                .hide(currentFragment)
+                                .add(R.id.container, fragment, tag)
+                    }
+                    transaction.hide(fragment1);
+                    transaction.show(R)*/
+
                     transaction.commit();
                     break;
             }
@@ -217,7 +231,7 @@ public class fragment_start extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            Toast.makeText(context,R.string.start, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,R.string.start, Toast.LENGTH_SHORT);
         }
     }
 

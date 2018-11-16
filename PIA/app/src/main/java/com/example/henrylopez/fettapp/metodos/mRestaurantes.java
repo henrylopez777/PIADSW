@@ -5,6 +5,8 @@ public class mRestaurantes {
     private String RestaurantName;
     private String RestaurantDire;
     private float RestaurantRating;
+    private Double Lat;
+    private Double Lng;
 
     public String getImage() {
         return Image;
@@ -43,6 +45,27 @@ public class mRestaurantes {
         RestaurantName = restaurantName;
         RestaurantDire = restaurantDire;
         RestaurantRating = restaurantRating;
+    }
+
+    public mRestaurantes(Double lat, Double lng) {
+        Lat = lat;
+        Lng = lng;
+    }
+
+    public Double getLat() {
+        return Lat;
+    }
+
+    public void setLat(Double lat) {
+        Lat = lat;
+    }
+
+    public Double getLng() {
+        return Lng;
+    }
+
+    public void setLng(Double lng) {
+        Lng = lng;
     }
 
     public  mRestaurantes(){

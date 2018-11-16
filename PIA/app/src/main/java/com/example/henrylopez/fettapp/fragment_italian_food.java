@@ -27,6 +27,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -101,6 +102,13 @@ public class fragment_italian_food extends Fragment {
             }
         });
 
+        btnLocationF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filtroMunicipio();
+            }
+        });
+
 
         /**BOTON ATRAS*/
         ImageView btnAtras = (ImageView) view.findViewById(R.id.ivBtnBack);
@@ -164,10 +172,13 @@ public class fragment_italian_food extends Fragment {
         View view=getView();
         mDatabase= FirebaseDatabase.getInstance().getReference().child("Restaurants");
         Query query;
+        Boolean val=false;
         if(stars.equals("Desactivar Filtro")){
             query = mDatabase.orderByChild("Category").equalTo(selection);
+            val=false;
         }else {
             query = mDatabase.orderByChild("CatRat").startAt(selection + stars).endAt(selection + stars);
+            val=true;
         }
         mDatabase.keepSynced(true);
         //Declarar RecyclerView y asignarlo a una variable
@@ -196,13 +207,15 @@ public class fragment_italian_food extends Fragment {
         //ASIGNARTODO AL RECYCLER VIEW
         rvPreferences.setAdapter(firebaseRecyclerAdapter);
         LinearLayoutManager mLay= new LinearLayoutManager(getActivity());
-        mLay.setReverseLayout(true);
-        mLay.setStackFromEnd(true);
+        mLay.setReverseLayout(val);
+        mLay.setStackFromEnd(val);
         rvPreferences.setLayoutManager(mLay);
     }
 
+    int catseles=5;
     public AlertDialog createRadioListDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        munseles=6;
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         final CharSequence[] items = new CharSequence[6];
 
@@ -212,9 +225,8 @@ public class fragment_italian_food extends Fragment {
         items[3] = "4";
         items[4] = "5";
         items[5] = "Desactivar Filtro";
-
         builder.setTitle("Selecciona cantidad de estrellas")
-                .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(items, catseles, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(
@@ -222,13 +234,128 @@ public class fragment_italian_food extends Fragment {
                                 "Seleccionaste: " + items[which],
                                 Toast.LENGTH_SHORT)
                                 .show();
+                        switch (items[which].toString()) {
+                            case "1":
+                                catseles = 0;
+                                break;
+                            case "2":
+                                catseles = 1;
+                                break;
+                            case "3":
+                                catseles = 2;
+                                break;
+                            case "4":
+                                catseles = 3;
+                                break;
+                            case "5":
+                                catseles = 4;
+                                break;
+                            case "Desactivar Filtro":
+                                catseles = 5;
+                                break;
+                        }
                         String stars= String.valueOf(items[which]);
                         filtro_rating(stars);
                     }
                 });
-
         return builder.show();
     }
+    int munseles=6;
+    public AlertDialog filtroMunicipio() {
+        catseles=5;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final CharSequence[] items = new CharSequence[7];
+        items[0] = "San Nicolás";
+        items[1] = "San Pedro";
+        items[2] = "Monterrey";
+        items[3] = "Guadalupe";
+        items[4] = "Apodaca";
+        items[5] = "Escobedo";
+        items[6] = "Desactivar Filtro";
+        builder.setTitle("Selecciona el municipio")
+                .setSingleChoiceItems(items, munseles, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(
+                                getActivity(),
+                                "Seleccionaste: " + items[which],
+                                Toast.LENGTH_SHORT)
+                                .show();
+                        switch (items[which].toString()){
+                            case "San Nicolás":
+                                munseles=0;
+                                break;
+                            case "San Pedro":
+                                munseles=1;
+                                break;
+                            case "Monterrey":
+                                munseles=2;
+                                break;
+                            case "Guadalupe":
+                                munseles=3;
+                                break;
+                            case "Apodaca":
+                                munseles=4;
+                                break;
+                            case "Escobedo":
+                                munseles=5;
+                                break;
+                            case "Desactivar Filtro":
+                                munseles=6;
+                                break;
+                        }
+                        String municipio= String.valueOf(items[which]);
+                        filtro_municipio(municipio);
+                    }
+                });
+        return builder.show();
+    }
+
+    private void filtro_municipio(String municipio){
+        Boolean val;
+        View view=getView();
+        mDatabase= FirebaseDatabase.getInstance().getReference().child("Restaurants");
+        Query query;
+        if(municipio.equals("Desactivar Filtro")){
+            query = mDatabase.orderByChild("Category").equalTo(selection);
+            val=false;
+        }else {
+            query = mDatabase.orderByChild("CatMun").startAt(selection + municipio).endAt(selection + municipio);
+            val=false;
+        }
+        mDatabase.keepSynced(true);
+        //Declarar RecyclerView y asignarlo a una variable
+        rvPreferences= (RecyclerView)view.findViewById(R.id.rvRestaurants);
+        //Habilitar que RecyclerView para que se modifiqué segun el contenido del adaptador
+        rvPreferences.setHasFixedSize(true);
+        rvPreferences.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //ADAPTADOR FIREBASE PARA POSTERIORMENTE ASIGNARLO A RECYCLERVIEW
+        FirebaseRecyclerAdapter<mRestaurantes,mRestaurantesViewHolder> firebaseRecyclerAdapter=
+                new FirebaseRecyclerAdapter<mRestaurantes, mRestaurantesViewHolder>
+                        (mRestaurantes.class,R.layout.restaurantes_row,mRestaurantesViewHolder.class,query) {
+                    @Override
+                    protected void populateViewHolder(mRestaurantesViewHolder viewHolder, mRestaurantes model, int position) {
+                        viewHolder.setRestaurantDire(model.getRestaurantDire());
+                        viewHolder.setRestaurantImage(getContext(),model.getImage());
+                        viewHolder.setRestaurantName(model.getRestaurantName());
+                        viewHolder.setRestaurantRating(model.getRestaurantRating());
+                    }
+                    @Override
+                    public void onBindViewHolder(mRestaurantesViewHolder viewHolder, int position) {
+                        super.onBindViewHolder(viewHolder, position);
+                        viewHolder.setOnClickListeners();
+                    }
+                };
+        //ASIGNARTODO AL RECYCLER VIEW
+        rvPreferences.setAdapter(firebaseRecyclerAdapter);
+        LinearLayoutManager mLay= new LinearLayoutManager(getActivity());
+        mLay.setReverseLayout(val);
+        mLay.setStackFromEnd(val);
+        rvPreferences.setLayoutManager(mLay);
+    }
+
+
 
     public static class mRestaurantesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View mView;
@@ -241,11 +368,13 @@ public class fragment_italian_food extends Fragment {
 
         public void setRestaurantName(String restaurantName){
             TextView restaurant_name=mView.findViewById(R.id.tvRestaurantName);
+            if(!restaurantName.equals(""))
             restaurant_name.setText(restaurantName);
         }
 
         public void setRestaurantDire(String restaurantDir){
             TextView restaurant_Dir=(TextView)mView.findViewById(R.id.tvRestaurantDir);
+            if(!restaurantDir.equals(""))
             restaurant_Dir.setText(restaurantDir);
         }
 
@@ -256,7 +385,9 @@ public class fragment_italian_food extends Fragment {
 
         public void setRestaurantImage(Context ctx,String restaurantImage){
             ImageView restaurant_Image= mView.findViewById(R.id.ivRestaurant);
-            Picasso.with(ctx).load(restaurantImage).into(restaurant_Image);
+            if(!restaurantImage.equals(""))
+                Glide.with(ctx).load(restaurantImage).thumbnail(0.01f).into(restaurant_Image);
+            //Picasso.with(ctx).load(restaurantImage).into(restaurant_Image);
         }
 
         public void setOnClickListeners()
@@ -269,6 +400,7 @@ public class fragment_italian_food extends Fragment {
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.cvRestaurante:
+                    Toast.makeText(context,"Cargando...",Toast.LENGTH_SHORT).show();
                     TextView tv=view.findViewById(R.id.tvRestaurantName);
                     //Log.i("holita",tv.getText().toString());
                     Intent intent = new Intent(context,restaurant.class);
@@ -319,4 +451,5 @@ public class fragment_italian_food extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

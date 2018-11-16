@@ -1,0 +1,247 @@
+body {
+  margin: auto;
+  background: #3a3a3a;  
+  font-family: 'Open Sans', sans-serif;
+
+}
+
+.info p {
+  text-align:center;
+  color: #fff;
+  text-transform:none;
+  font-weight:600;
+  font-size:9px;
+}
+
+
+.info i {
+  color:#F6AA93;
+}
+form h1 {
+  font-size: 18px;
+  background: #ffab40 none repeat scroll 0% 0%;
+  color: rgb(255, 255, 255);
+  padding: 22px 25px;
+  margin: auto;
+  text-shadow: none; 
+  text-align:left
+}
+
+form {
+  max-width:700px;
+  width:100%;
+  margin: 1% auto;
+  background-color: #FFFFFF;
+  overflow: hidden;
+}
+
+p span {
+  color: #F00;
+}
+
+p {
+  margin: 0px;
+  font-weight: 500;
+  line-height: 2;
+  color:#333;
+}
+
+h1 {
+  text-align:center; 
+  color: #fff;
+  /*text-shadow: 1px 1px 0px #FFF;*/
+  margin:5px 0px 0px 0px
+}
+
+
+input {
+  
+  border: 1px solid #eee;
+  margin-bottom: 15px;
+  width: 75%;
+  height: 40px;
+  float: left;
+  padding: 0px 15px;
+}
+
+.w3-select{
+  width: 75%;
+  height: 40px;
+  
+ float: left;
+ border: 1px solid #eee;
+  padding: 0px 15px; 
+}
+
+a {
+  text-decoration:inherit
+}
+
+textarea {
+  
+  border: 1px solid #EEE;
+  margin: 0;
+  width: 75%;
+  height: 130px; 
+  float: left;
+  padding: 0px 15px;
+}
+
+.form-group {
+  overflow: hidden;
+  clear: both;
+}
+
+
+.icon-case {
+  width: 35px;
+  float: left;
+  background:#eeeeee;
+  height:40px;
+  position: relative;
+  object-position: center;
+  
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+  text-align: center;
+  line-height:40px;
+}
+
+i {
+  color:#555;
+}
+
+.contentform {
+  padding: 40px 30px;
+}
+
+.bouton-contact{
+  background-color: #f1c40f;
+  color: #FFF;
+  text-align: center;
+  width: 20%;
+  border:0;
+  display: flex;
+  justify-content: center;
+  margin:auto;
+  padding: 17px 25px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.imgcont{
+width: 300px;
+height: 250px;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+img{
+  max-height: 300px;
+  max-width: 250px
+}
+
+
+.bouton-contact:hover{
+  background: #3a3a3a;
+  color: #f1c40f;
+  border: 1px solid #f1c40f ;
+  cursor: pointer;
+}
+
+.leftcontact {
+  width:49.5%; 
+  float:left;
+  border-right: 1px dotted #CCC;
+  box-sizing: border-box;
+  padding: 0px 15px 0px 0px;
+}
+
+.rightcontact {
+  width:49.5%;
+  float:right;
+  box-sizing: border-box;
+  padding: 0px 0px 0px 15px;
+}
+
+.validation {
+  display:none;
+  margin: 0 0 10px;
+  font-weight:400;
+  font-size:13px;
+  color: #DE5959;
+}
+
+#sendmessage {
+  border:1px solid #fff;
+  display:none;
+  text-align:center;
+  margin:10px 0;
+  font-weight:600;
+  margin-bottom:30px;
+  background-color: #EBF6E0;
+  color: #5F9025;
+  border: 1px solid #B3DC82;
+  padding: 13px 40px 13px 18px;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.03);
+}
+
+
+
+.bouton{
+  display: flex;
+  margin: auto;
+  background: #fff;
+  border: none;
+  width: 35px;
+  height: 35px
+}
+
+.bouton:hover{
+  background: #Faa
+}
+
+#sendmessage.show,.show  {
+  display:block;
+
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #ffab40;
+}
+
+.active {
+    background-color: #f1c40f;
+}
+
+.activee{
+   background-color: #f1c40f; 
+}
+
+.active:hover{
+  background: #3a3a3a;
+  color: #f1c40f;
+  border: 1px solid #f1c40f ;
+  cursor: pointer;
+}

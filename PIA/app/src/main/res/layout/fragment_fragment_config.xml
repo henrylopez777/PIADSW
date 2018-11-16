@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,118 +13,243 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="20dp"
         >
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:visibility="invisible"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            >
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/ivUser"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
 
-            <ImageView
-                android:id="@+id/ivUser"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:src="@drawable/gordito_black"
-                />
-        <TextView
-            android:id="@+id/tvNombre"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="@string/app_name"
-            android:textColor="@color/fontWithe"
-            android:textAlignment="center"
-            android:textSize="30dp"
-            android:fontFamily="@font/pt_sans_narrow_bold"
-            />
+                    />
+                <ProgressBar
+                    android:visibility="visible"
+                    android:id="@+id/mProgress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/tvCorreo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="@string/app_name"
-            android:textAlignment="center"
-            android:textSize="25dp"
-            android:fontFamily="@font/pt_sans_narrow"
-            android:textColor="@color/fontWithe"
-            />
-        <TextView
-            android:id="@+id/tvIdUsuario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="@string/app_name"
-            android:textAlignment="center"
-            android:textSize="15dp"
-            android:fontFamily="@font/pt_sans_narrow"
-            android:layout_marginBottom="30sp"
-            android:textColor="@color/fontWithe"
-            />
 
-        <Button
-            android:id="@+id/btnChangePhoto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/colorPrimary"
-            android:drawableStart="@drawable/ic_camera_front_black_24dp"
-            android:fontFamily="@font/pt_sans_narrow"
-            android:paddingEnd="50dp"
-            android:paddingLeft="50dp"
-            android:text="Cambiar foto"
-            android:textAllCaps="false"
-            android:textColor="@color/fontWithe"
-            android:textSize="25sp"  />
-        <!--<Button
-            android:id="@+id/btnTomarPicture"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="1dp"
-            android:background="@color/colorPrimary"
-            android:drawableStart="@drawable/ic_photo_camera_black_24dp"
-            android:fontFamily="@font/pt_sans_narrow"
-            android:paddingEnd="50dp"
-            android:paddingLeft="50dp"
-            android:text="Tomar Foto"
-            android:textAllCaps="false"
-            android:textColor="@color/fontWithe"
-            android:textSize="25sp"  />-->
-        <Button
-            android:id="@+id/btnCloseSesion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="1dp"
-            android:background="@color/colorPrimary"
-            android:fontFamily="@font/pt_sans_narrow"
-            android:drawableStart="@drawable/ic_vpn_key_black_24dp"
-            android:paddingEnd="50dp"
-            android:paddingLeft="50dp"
-            android:text="Cerrar Sesión"
-            android:textAllCaps="false"
-            android:textColor="@color/fontWithe"
-            android:textSize="25sp"
-            android:layout_gravity="center"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_margin="1dp"
+                android:orientation="vertical">
 
-        <!--<Button
-            android:id="@+id/btnRemoveAccess"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="1dp"
-            android:fontFamily="@font/pt_sans_narrow"
-            android:text="Quitar Acceso"
-            android:textAllCaps="false"
-            android:textColor="@color/colorPrimary"
-            android:textSize="25sp"
-            android:layout_gravity="center"/>-->
+                <TextView
+                    android:id="@+id/tvNombre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/pt_sans_narrow_bold"
+                    android:textAlignment="center"
+                    android:textColor="@color/fontWithe"
+                    android:textSize="25dp"
+                    tools:text="@string/app_name" />
+
+                <TextView
+                    android:id="@+id/tvCorreo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/pt_sans_narrow"
+                    android:textAlignment="center"
+                    android:textColor="@color/fontWithe"
+                    android:textSize="20dp"
+                    tools:text="@string/app_name" />
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tvIdUsuario"
+                android:layout_width="228dp"
+                android:layout_height="21dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/pt_sans_narrow"
+                android:textAlignment="center"
+                android:textColor="@color/fontWithe"
+                android:textSize="10dp"
+                android:visibility="invisible"
+                tools:text="@string/app_name" />
+
+
+        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:layout_marginBottom="60dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/menuColor" />
+
+                <Button
+                    android:id="@+id/btnError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/fondoColor"
+                    android:drawableStart="@drawable/ic_perm_device_information_withe_24dp"
+                    android:fontFamily="@font/pt_sans_narrow"
+                    android:paddingLeft="50dp"
+                    android:paddingEnd="50dp"
+                    android:text="Acerca De"
+                    android:textAllCaps="false"
+                    android:textColor="@color/fontWithe"
+                    android:textSize="20sp" />
+
+                <View
+                    android:id="@+id/divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/menuColor" />
+
+                <Button
+                    android:id="@+id/btnChangePhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/fondoColor"
+                    android:drawableStart="@drawable/ic_camera_front_black_24dp"
+                    android:fontFamily="@font/pt_sans_narrow"
+                    android:paddingLeft="50dp"
+                    android:paddingEnd="50dp"
+                    android:text="Cambiar foto"
+                    android:textAllCaps="false"
+                    android:textColor="@color/fontWithe"
+                    android:textSize="20sp" />
+                <!--<Button
+                    android:id="@+id/btnTomarPicture"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/colorPrimary"
+                    android:drawableStart="@drawable/ic_photo_camera_black_24dp"
+                    android:fontFamily="@font/pt_sans_narrow"
+                    android:paddingEnd="50dp"
+                    android:paddingLeft="50dp"
+                    android:text="Tomar Foto"
+                    android:textAllCaps="false"
+                    android:textColor="@color/fontWithe"
+                    android:textSize="25sp"  />-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/menuColor" />
+
+                <Button
+                    android:id="@+id/btnRegRest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/fondoColor"
+                    android:drawableStart="@drawable/ic_library_add_withe_24dp"
+                    android:fontFamily="@font/pt_sans_narrow"
+                    android:paddingLeft="50dp"
+                    android:paddingEnd="50dp"
+                    android:text="Pedir Registro de Restaurante"
+                    android:textAllCaps="false"
+                    android:textColor="@color/fontWithe"
+                    android:textSize="20sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/menuColor" />
+
+                <Button
+                    android:id="@+id/btnCloseSesion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/fondoColor"
+                    android:drawableStart="@drawable/ic_phonelink_close_withe_24dp"
+                    android:fontFamily="@font/pt_sans_narrow"
+                    android:paddingLeft="50dp"
+                    android:paddingEnd="50dp"
+                    android:text="Cerrar Sesión"
+                    android:textAllCaps="false"
+                    android:textColor="@color/fontWithe"
+                    android:textSize="20sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/menuColor" />
+
+                <Button
+                    android:id="@+id/btnSalirApp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/fondoColor"
+                    android:drawableStart="@drawable/ic_vpn_key_black_24dp"
+                    android:fontFamily="@font/pt_sans_narrow"
+                    android:paddingLeft="50dp"
+                    android:paddingEnd="50dp"
+                    android:text="Salir"
+                    android:textAllCaps="false"
+                    android:textColor="@color/fontWithe"
+                    android:textSize="20sp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/menuColor" />
+
+                <!--<Button
+                    android:id="@+id/btnRemoveAccess"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="1dp"
+                    android:fontFamily="@font/pt_sans_narrow"
+                    android:text="Quitar Acceso"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="25sp"
+                    android:layout_gravity="center"/>-->
+            </LinearLayout>
     </LinearLayout>
 
 </FrameLayout>

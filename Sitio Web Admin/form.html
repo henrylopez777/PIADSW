@@ -1,0 +1,269 @@
+<html>
+<head>
+  <title>Firebase Login</title>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+  <link rel="stylesheet" href="styleform.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+
+</head>
+<body>
+	<ul>
+	  <li><a href="form.html" class="active">Restaurante</a></li>
+	  <li><a href="news.html">Crear Noticia</a></li>
+	  <li><a href="category.html">Crear Categoría</a></li>
+	  <li style="float:right"><a class="active" href="fun" onclick="Close()">Cerrar Sesión</a></li>
+	  <li style="float:right"><a href="fun" onclick="Close()">
+	  	<div class="info"><p id="info"></p>
+   </div></a></li>
+	</ul>
+
+	  <h1>Registrar Restaurante</h1>
+   
+  <form>
+	    <h1>Favor de introducir los datos del restaurante que desea agregar.</h1>
+	    
+    <div class="contentform">
+    	<div id="sendmessage"> Your message has been sent successfully. Thank you. </div>
+    	<div class="leftcontact">
+			      <div class="form-group">
+			        <p>Nombre del Restaurante<span>*</span></p>
+			        <span class="icon-case"><i class="fas fa-utensils"></i></span>
+				        <input type="text" name="nom" id="nom"/>
+       </div> 
+
+       		<div class="form-group">
+			<p>Categoría<span>*</span></p>
+			<span class="icon-case"><i class="fa fa-map-marker"></i></span>
+				<select name="cars" class="w3-select" id="category">
+				  
+				</select>
+			</div>	
+
+            <div class="form-group">
+            <p>Dirección <span>*</span></p>
+            <span class="icon-case"><i class="fas fa-map-marked-alt"></i></span>
+				<input type="text" name="prenom" id="dir"/>
+			</div>
+			<div class="form-group">
+            <p>Latitud <span>*</span></p>
+            <span class="icon-case"><i class="fas fa-map-marker-alt"></i></span>
+				<input type="text" name="prenom" id="lat"/>
+			</div>
+			<div class="form-group">
+            <p>Longitud <span>*</span></p>
+            <span class="icon-case"><i class="fas fa-map-marker"></i></span>
+				<input type="text" name="prenom" id="lng"/>
+			</div>
+
+			<div class="form-group">
+			<p>Teléfono<span>*</span></p>	
+			<span class="icon-case"><i class="fa fa-phone"></i></span>
+                <input type="tel" name="email" id="tel"/>
+			</div>	
+
+			<div class="form-group">
+			<p>Facebook<span>*</span></p>
+			<span class="icon-case"><i class="fab fa-facebook-f	"></i></span>
+				<input type="text" name="society" id="fb"/>
+			</div>
+
+			<div class="form-group">
+			<p>Web Site <span>*</span></p>
+			<span class="icon-case"><i class="fas fa-globe-americas"></i></span>
+				<input type="text" name="adresse" id="website"/>
+			</div>
+
+			<div class="form-group">
+			<p>Municipio<span>*</span></p>
+			<span class="icon-case"><i class="fa fa-map-marker"></i></span>
+				<select name="cars" class="w3-select" id="municipio">
+				  <option value="San Nicolás">San Nicolás</option>
+				  <option value="San Pedro">San Pedro</option>
+				  <option value="Monterrey">Monterrey</option>
+				  <option value="Guadalupe">Guadalupe</option>
+				  <option value="Apodaca">Apodaca</option>
+				  <option value="Escobedo">Escobedo</option>
+				</select>
+			</div>	
+
+			<div class="form-group">
+			<p>URL Image<span>*</span></p>
+			<span class="icon-case"><i class="fas fa-link"></i></span>
+				<input type="text" name="adresse" id="urlImg"/>
+			</div>
+	</div>
+
+	<div class="rightcontact">	
+			<div class="form-group">
+			<p>Rango de Precio<span>*</span></p>
+			<span class="icon-case"><i class="fas fa-dollar-sign"></i></span>
+				<input type="text" name="ville" id="range"/>
+			</div>	
+
+			<div class="form-group">
+			<p>Calificación<span>*</span></p>	
+			<span class="icon-case"><i class="fas fa-star"></i></span>
+			<select name="cars" class="w3-select" id="rating">
+				  <option value="1">1</option>
+				  <option value="2">2</option>
+				  <option value="3">3</option>
+				  <option value="4">4</option>
+				  <option value="5">5</option>
+				</select>
+			</div>
+			<div class="form-group">
+			<p>Horarios<span>*</span></p>
+			<span class="icon-case"><i class="fas fa-calendar"></i></span>
+                <textarea name="message" rows="14" id="horario"></textarea>
+			</div>	
+			<div class="imgCont">
+				<img src="fett_iconsm_map.png" alt="" id="imgRest" class="imgRest">
+			</div>
+	</div>
+	</div>
+</form>	
+<button class="bouton-contact" onclick="writeNewRestaurant()">Send</button>
+<script src="https://www.gstatic.com/firebasejs/5.5.5/firebase.js">
+</script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCUzyfIDGajBnYL8T2wzFsKU2sSlHVwvKU",
+    authDomain: "fettapp-fb465.firebaseapp.com",
+    databaseURL: "https://fettapp-fb465.firebaseio.com",
+    projectId: "fettapp-fb465",
+    storageBucket: "fettapp-fb465.appspot.com",
+    messagingSenderId: "903869939396"
+  };
+  firebase.initializeApp(config);
+</script>
+  <script>
+	
+	var email;
+  	firebase.auth().onAuthStateChanged(function(user) {
+	  if (user) {
+	    email = user.email;
+		  var info=document.getElementById("info");
+		  info.textContent=email;
+		  console.log(email);
+	    // usuario está logueado.
+	  } else {
+	    console.log("Error");
+	    location.href="index.html";
+	    // usuario NO está logueado.
+	  }
+	});
+
+  	function Close(){
+  		firebase.auth().signOut();
+  	}
+
+
+  	function writeNewRestaurant() {
+
+  		var nom, dir, tel, fb, website, municipio, urlimage, range, rating, catrat, horario, category, categorysel, lat, lng;
+  		
+  		nom=document.getElementById("nom").value;
+  		dir=document.getElementById("dir").value;
+  		tel=document.getElementById("tel").value;
+		fb=document.getElementById("fb").value;
+		website=document.getElementById("website").value;
+		urlimage=document.getElementById("urlImg").value;
+		range=document.getElementById("range").value;
+		horario=document.getElementById("horario").value;
+		lat=document.getElementById("lat").value;
+		lng=document.getElementById("lng").value;
+			
+		category=document.getElementById("category");
+  		categorysel=category.options[category.selectedIndex].value;
+		municipio=document.getElementById("municipio");
+		var munsel= municipio.options[municipio.selectedIndex].value;
+		rating=document.getElementById("rating");
+		var ratsel= parseInt(rating.options[rating.selectedIndex].value);
+		
+		var key = firebase.database().ref().child('Restaurants').push().getKey();
+		
+		if(lat == "" || lng== ""){
+			lat=0.1;
+			lng=0.1;
+			alert('Latitud y Longitud en blanco');	
+		}else{
+		    lat=parseFloat(document.getElementById("lat").value);
+		    lng=parseFloat(document.getElementById("lng").value);
+		}
+
+		catrat=categorysel+String(ratsel);
+		var catmunsel;
+		catmunsel=categorysel+munsel
+		if(nom != "" && dir != "" && urlImg != ""){
+			firebase.database().ref().child('Restaurants').child(key).set({
+				Id: key,
+				CatRat: catrat,
+				Category: categorysel,
+				Image: urlimage,
+				RFb: fb,
+				RTel: tel,
+				RestaurantDire:	dir,
+				RestaurantName: nom,
+				RestaurantRating: ratsel,
+				Email: email,
+				RMunicipio: munsel,
+				RPrice: range,
+				RTime: horario,
+				RWs: website,
+				CatMun: catmunsel,
+				Lat: lat,
+				Lng: lng
+
+			});
+			alert('Datos Registrados Correctamente');
+			limpiar();	
+		}
+		else
+		{
+			alert('Favor de revisar los campos en blanco');
+		}
+		
+	}
+
+	function limpiar(){
+		document.getElementById("nom").value="";
+  		document.getElementById("dir").value="";
+  		document.getElementById("tel").value="";
+		document.getElementById("fb").value="";
+		document.getElementById("website").value="";
+		document.getElementById("urlImg").value="";
+		document.getElementById("range").value="";
+		document.getElementById("horario").value="";
+		document.getElementById("imgRest").src="fett_iconsm_map.png";
+	}
+
+	window.onload=function(){ 
+		var select = document.getElementById('category');
+		var categorias = firebase.database().ref().child('Preferences');
+   			categorias.on('child_added', function(snapshot) {
+		       var obj = snapshot.val();
+		       console.log(obj.Desc);
+		       	var opt = document.createElement('option');
+			    opt.value = obj.Desc;
+			    opt.innerHTML = obj.Desc;
+			    select.appendChild(opt);
+		   }); 
+		document.getElementById("urlImg").onchange=function(){
+			var imag;
+			imag=document.getElementById("urlImg").value;
+			console.log(imag);
+			document.getElementById("imgRest").src = imag;
+			if(imag===''){
+				document.getElementById("imgRest").src = "fett_iconsm_map.png";
+			}
+
+		}
+
+		
+	}
+  </script>
+</body>
+</html>

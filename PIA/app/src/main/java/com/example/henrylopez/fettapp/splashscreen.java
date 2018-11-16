@@ -1,6 +1,7 @@
 package com.example.henrylopez.fettapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,9 +21,18 @@ public class splashscreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent=new Intent(splashscreen.this, IntroActivity.class);
-                startActivity(intent);
-                finish();
+                SharedPreferences prefs=getSharedPreferences("User",MODE_PRIVATE);
+                String id= prefs.getString("id",null);
+                if(id==null){
+                    Intent intent=new Intent(splashscreen.this, IntroActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                if(id!=null){
+                    Intent intent1=new Intent(getApplicationContext(),registro_user.class);
+                    startActivity(intent1);
+                    finish();
+                }
             }
         },2000);
 

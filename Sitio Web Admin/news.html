@@ -1,0 +1,133 @@
+<html>
+<head>
+  <title>Registrar Noticia</title>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+  <link rel="stylesheet" href="stylenews.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+</head>
+<body>
+	<ul>
+	  <li><a href="form.html">Restaurante</a></li>
+	  <li><a href="news.html"class="activee">Crear Noticia</a></li>
+	  <li><a href="category.html" >Crear Categoría</a></li>
+	  <li style="float:right"><a class="active" href="fun" onclick="Close()">Cerrar Sesión</a></li>
+	  <li style="float:right"><a href="fun" onclick="Close()">
+	  	<div class="info"><p id="info"></p>
+   </div></a></li>
+	</ul>
+
+	  <h1>Registrar Noticia</h1>
+   
+  <form>
+	    <h1>Introduce los datos para la nueva noticia</h1>
+	    
+    <div class="contentform">
+    	<div id="sendmessage"> Your message has been sent successfully. Thank you. </div>
+    	<div class="leftcontact">
+			      <div class="form-group">
+			        <p>Titulo de la Noticia<span>*</span></p>
+			        <span class="icon-case"><i class="fas fa-font"></i></span>
+				        <input type="text" name="nom" id="nom"/>
+       </div> 
+            <div class="form-group">
+            <p>Contenido de la noticia <span>*</span></p>
+            <span class="icon-case"><i class="fas fa-file-alt"></i></span>
+				<input type="text" name="prenom" id="prenom"/>
+			</div>
+
+			<div class="form-group">
+			<p>Imagen de la noticia<span>*</span></p>	
+			<span class="icon-case"><i class="fas fa-link"></i></span>
+                <input type="text" name="email" id="email" data-rule="email" data-msg="Favor de verificar el campo"/>
+                <div class="validation"></div>
+			</div>	
+
+
+	</div>
+
+	<div class="rightcontact">	
+			<div class="imgcont">
+				<img id="imgnew" src="fett_iconsm_map.png" alt="">
+			</div>
+	</div>
+	</div>
+</form>	
+<button class="bouton-contact" onclick="writeNewNews()">Send</button>
+<script src="https://www.gstatic.com/firebasejs/5.5.5/firebase.js">
+</script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCUzyfIDGajBnYL8T2wzFsKU2sSlHVwvKU",
+    authDomain: "fettapp-fb465.firebaseapp.com",
+    databaseURL: "https://fettapp-fb465.firebaseio.com",
+    projectId: "fettapp-fb465",
+    storageBucket: "fettapp-fb465.appspot.com",
+    messagingSenderId: "903869939396"
+  };
+  firebase.initializeApp(config);
+</script>
+  <script>
+	var email;
+  	firebase.auth().onAuthStateChanged(function(user) {
+	  if (user) {
+	    email = user.email;
+		  var info=document.getElementById("info");
+		  info.textContent=email;
+		  console.log(email);
+	    // usuario está logueado.
+	  } else {
+	    console.log("Error");
+	    location.href="index.html";
+	    // usuario NO está logueado.
+	  }
+	});
+
+  	function Close(){
+  		firebase.auth().signOut();
+  	}
+
+
+  	function writeNewNews() {
+
+  		var title, image, content;
+  		title=document.getElementById("nom").value;
+  		content=document.getElementById("prenom").value;
+  		image=document.getElementById("email").value;
+  		if(image==='' || title==='' || content===''){
+			alert('Favor de verificar todos los campos');
+  		}else{
+  			var key = firebase.database().ref().child('News').push().getKey();
+  			console.log(key);
+
+  			firebase.database().ref().child('News').child(key).set({
+				Content: content,
+				Image: image,
+				Title: title,
+				Key: key,
+				Email: email	
+			});
+			alert('Noticia enviada correctamente');
+			
+  		}
+  		document.getElementById("nom").value="";
+  		document.getElementById("prenom").value="";
+  		document.getElementById("email").value="";
+	}
+
+	window.onload=function(){ 
+		document.getElementById("email").onchange=function(){
+			var imag;
+			imag=document.getElementById("email").value;
+			console.log(imag);
+			document.getElementById("imgnew").src = imag;
+			if(imag===''){
+				document.getElementById("imgnew").src = "fett_iconsm_map.png";
+			}
+		}
+	}
+  </script>
+</body>
+</html>

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".inicio"
     android:orientation="vertical"
+    android:background="@color/fondoColor"
     android:gravity="center"
     >
 
@@ -13,10 +14,12 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="472dp"
+        android:layout_gravity="center"
         >
         <fragment
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:name="com.example.henrylopez.fettapp.fragmentImg"
             tools:layout="@layout/fragment_fragment_img"
             android:id="@+id/TODO"></fragment>

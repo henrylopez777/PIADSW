@@ -5,8 +5,10 @@
     <color name="colorAccent">#FF4081</color>-->
 
     <color name="colorPrimary">#dbb11d</color>
-    <color name="colorPrimaryDark">#db9600</color>
-    <color name="colorAccent">#bf0411</color>
+    <color name="colorPrimaryDark">#d2ab26</color>
+    <!--<color name="colorPrimaryDark">#db9600</color>-->
+    <!--<color name="colorAccent">#bf0411</color>-->
+    <color name="colorAccent">#db9600</color>
 
     <color name="fontWithe">#FFFFFF</color>
     <color name="fontWitheTrans">#B3FFFFFF</color>
@@ -14,6 +16,7 @@
 
     <color name="menuColor">#18191a</color>
     <color name="fondoColor">#121212</color>
+    <color name="btnColor">#121220</color>
     <color name="iconGrayColor">#303030</color>
 
 </resources>

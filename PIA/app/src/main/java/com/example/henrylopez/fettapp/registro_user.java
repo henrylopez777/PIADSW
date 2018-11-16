@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
@@ -18,6 +19,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class registro_user extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -88,6 +100,7 @@ public class registro_user extends AppCompatActivity implements GoogleApiClient.
             mEditor.commit();
             */
             GoogleSignInAccount account = result.getSignInAccount();
+            fb_registrar_user(account);
             id=account.getId();
             goMainScreen();
         }else{
@@ -103,5 +116,51 @@ public class registro_user extends AppCompatActivity implements GoogleApiClient.
         ed.putString("id",id);
         ed.apply();
         startActivity(intent);
+    }
+
+    private void fb_registrar_user(final GoogleSignInAccount account){
+        //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final DatabaseReference dbRef =
+                FirebaseDatabase.getInstance().getReference().child("Users");
+        Query query = dbRef.orderByKey().equalTo(account.getId());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count=0;
+                for (DataSnapshot user:dataSnapshot.getChildren()){
+                    count++;
+                }
+                if(count==0){
+                            Map<String, String> Transaction = new HashMap<>();
+                            if(!account.getEmail().isEmpty())
+                                Transaction.put("Email", account.getEmail());
+                            if(!String.valueOf(account.getPhotoUrl()).isEmpty())
+                                Transaction.put("Image", String.valueOf(account.getPhotoUrl()));
+                            if(!account.getId().isEmpty())
+                                Transaction.put("Id", account.getId());
+                            dbRef.child(String.valueOf(account.getId())).setValue(Transaction);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        //dbRef.child(key).setValue(Transaction);
+        /*Transaction.put("Cant", etCant.getText().toString());
+        Transaction.put("Detail", etDetail.getText().toString());
+        key=dbRef.push().getKey();
+        Transaction.put("Key",key);
+        Transaction.put("FechaTrans",etFecha.getText().toString());
+        Transaction.put("FechaActual",fechaNow);*/
+        /*if(rbSalida.isChecked()) {
+            type="Salida";
+        }else if(rbEntrada.isChecked()){
+            type="Entrada";
+        }*/
     }
 }

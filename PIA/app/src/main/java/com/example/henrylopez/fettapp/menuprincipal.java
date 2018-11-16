@@ -1,5 +1,6 @@
 package com.example.henrylopez.fettapp;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,15 +28,15 @@ public class menuprincipal extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction = fragmentManager.beginTransaction();
             //DETECTAR QUE ITEM ES SELECCIONADO PARA MOSTRAR EL FRAGMENT ADECUADO
             switch (item.getItemId()) {
                 case R.id.navigation_search:
-                    transaction.replace(R.id.flFragment,new fragment_search()).commit();
+                    transaction.replace(R.id.flFragment,new fragment_search(),"News").commit();
                     i=1;
                     return true;
                 case R.id.navigation_preferences: //INICIO O PREFERENCIAS
-                    transaction.replace(R.id.flFragment,new fragment_start()).commit();
+                    transaction.replace(R.id.flFragment,new fragment_start(),"Home").commit();
                     i=1;
                     return true;
                 case R.id.navigation_config:
@@ -48,7 +49,8 @@ public class menuprincipal extends AppCompatActivity {
             return false;
         }
     };
-
+    FragmentTransaction transaction;
+    BottomNavigationView navigation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,19 +66,9 @@ public class menuprincipal extends AppCompatActivity {
         //transaction.replace(R.id.flFragment,new fragment_start()).commit();
 
         //CARGAR BARRA DE NAVEGACION INFERIOR
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_preferences);
-
-        SharedPreferences prefs=getSharedPreferences("User",MODE_PRIVATE);
-            String id= prefs.getString("id",null);
-            if(id==null){
-                Intent intent=new Intent(getApplicationContext(),splashscreen.class);
-                startActivity(intent);
-                finish();
-            }
-
-
     }
 
     //CONTROLAR EVENTO DE BOTON ATRAS EVITANDO CIERRE DE APP
@@ -86,8 +78,12 @@ public class menuprincipal extends AppCompatActivity {
             /*// Esto es lo que hace mi botón al pulsar ir a atrás
             Toast.makeText(getApplicationContext(), "hola",
                     Toast.LENGTH_SHORT).show();*/
+           Fragment myFragment = getFragmentManager().findFragmentById(R.id.flFragment);
+           if (myFragment != null && myFragment.isVisible()) {
+               transaction.replace(R.id.flFragment,new fragment_start()).commit();
+           }
             return true;
-        }
+       }
         return super.onKeyDown(keyCode, event);
     }
 }

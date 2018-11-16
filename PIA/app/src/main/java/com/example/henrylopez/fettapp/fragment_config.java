@@ -2,11 +2,14 @@ package com.example.henrylopez.fettapp;
 
 //import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 //import android.content.SharedPreferences;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
@@ -21,12 +24,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -36,8 +42,24 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -55,6 +77,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class fragment_config extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    ProgressBar mProgress;
+    //VARIABLES
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -84,6 +108,12 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
     ImageView ivUser;
     Button btnChangePhoto;
     Button btnRevokeSesion;
+    Button btnInfError, btnRegRest, btnSalir;
+    SharedPreferences  prefsimg;
+
+    //FIREBASE STORAGE
+    private StorageReference mStorage;
+
 
     //INICIALIZAR API DE GOOGLE
     GoogleApiClient googleApiClient;
@@ -135,7 +165,44 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                     .build();
         }
 
-        //FIN DE GOOGLE
+    }
+
+
+
+    private void assignar_image(){
+        mProgress.setVisibility(View.VISIBLE);
+        prefsimg= getContext().getSharedPreferences("User",MODE_PRIVATE);
+        String id = prefsimg.getString("id", "0");
+        final DatabaseReference dbRef =
+                FirebaseDatabase.getInstance().getReference().child("Users");
+        Query query = dbRef.orderByKey().equalTo(id);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count=0;
+                Context ctxx=fragment_config.this.getContext();
+                for (DataSnapshot user:dataSnapshot.getChildren()){
+                    count++;
+                    if(count!=0){
+                        String miPath=user.child("Image").getValue().toString();
+
+                        if(!miPath.equals("null")&& ctxx !=null){
+                            Glide.with(ctxx).load(miPath).apply(RequestOptions.circleCropTransform()).into(ivUser);
+
+                        }
+                    }
+                    if(user.child("Image").getValue().toString().isEmpty()){
+                        Glide.with(ctxx).load(R.drawable.gordito_black).apply(RequestOptions.circleCropTransform()).into(ivUser);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                mProgress.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     //PARA NO SOBRE CARGAR LA APP Y EVITAR QUE SE CIERRE
@@ -165,13 +232,9 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
 
         //BOTON CERRAR SESION
         btnCloseSesion=vista.findViewById(R.id.btnCloseSesion);
-        btnCloseSesion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LogOutSesionGoogle(vista);
-            }
-        });
-
+        btnSalir=vista.findViewById(R.id.btnSalirApp);
+        mProgress=vista.findViewById(R.id.mProgress);
+        mProgress.setVisibility(View.VISIBLE);
         //BOTON Revocar Accesos
         //btnRevokeSesion=vista.findViewById(R.id.btnRemoveAccess);
         /*btnRevokeSesion.setOnClickListener(new View.OnClickListener() {
@@ -185,7 +248,20 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
         tvNombre = (TextView)vista.findViewById(R.id.tvNombre);
         tvEmail=(TextView)vista.findViewById(R.id.tvCorreo);
         tvIdUser=(TextView)vista.findViewById(R.id.tvIdUsuario);
-
+        btnInfError=vista.findViewById(R.id.btnError);
+        btnRegRest=vista.findViewById(R.id.btnRegRest);
+        btnInfError.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AcercaDe();
+            }
+        });
+        btnRegRest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enviar_error(0);
+            }
+        });
         btnChangePhoto = vista.findViewById(R.id.btnChangePhoto);
         btnChangePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,9 +269,94 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                 showDialogImageOptions();
             }
         });
-
+        ivUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                click_image();
+            }
+        });
+        btnCloseSesion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cerrar_ss();
+            }
+        });
+        btnSalir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().finishAffinity();
+            }
+        });
         // Inflate the layout for this fragment
+        assignar_image();
+        mProgress.setVisibility(View.INVISIBLE);
         return vista;
+    }
+
+    private void cerrar_ss(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("¿Desea Cerrar Sesión?");
+        builder.setIcon(R.drawable.ic_fett_xl);
+        builder.setPositiveButton("Cerrar Sesión", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                LogOutSesionGoogle(vista);
+            }
+        });
+
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void enviar_error(int bandera) {
+        Toast.makeText(getContext(),"Iniciando...", Toast.LENGTH_SHORT).show();
+        String[] TO = {"reports.fett.app@gmail.com"}; //aquí pon tu correo
+        String[] CC = {""};
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_CC, CC);
+        // Esto podrás modificarlo si quieres, el asunto y el cuerpo del mensaje
+        if(bandera==0){
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Registrar Restaurante");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Quiero Registrar Mi Restaurante " +
+                    "\nNombre: \nDirección: \nTel: \nCel: \nFacebook: \nSitio Web: \n Imagen:");
+        }
+        if(bandera==1){
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Error FettApp");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Quiero reportar un error: \n");
+        }
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Enviar email..."));
+            //finish();
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getContext(),"No tienes clientes de email instalados.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void click_image(){
+        final Dialog dialog = new Dialog(getContext(), android.R.style.Theme_Light);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.ly_perfil_image);
+        ImageView iv=dialog.findViewById(R.id.ly_pefil_image);
+        iv.setImageDrawable(ivUser.getDrawable());
+        dialog.show();
+        dialog.findViewById(R.id.ly_image).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void showDialogImageOptions() {
@@ -221,14 +382,57 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                 if(opciones[i].equals("Cancelar")){
                     dialogInterface.dismiss();
                 }
+
             }
         });
         builder.show();
     }
 
+    private void AcercaDe(){
+
+        final CharSequence[] opciones = {"Versión 1.0","Informar de un error","Recomendar Fett","Cancelar"};
+        final AlertDialog.Builder builder= new AlertDialog.Builder(getContext());
+        builder.setTitle("FettApp");
+        builder.setIcon(R.drawable.ic_fett_xl);
+        builder.setItems(opciones, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(opciones[i].equals("Versión 1.0")){
+
+                }
+                if(opciones[i].equals("Informar de un error")){
+                    enviar_error(1);
+                }
+                if(opciones[i].equals("Recomendar Fett")){
+                    onClickWhatsApp();
+                }
+                if(opciones[i].equals("Cancelar")){
+
+                }
+            }
+        });
+        builder.show();
+    }
+    public void onClickWhatsApp() {
+        PackageManager pm=getContext().getPackageManager();
+        try {
+            Intent waIntent = new Intent(Intent.ACTION_SEND);
+            waIntent.setType("text/plain");
+            String text = "Te recomiendo FettApp \nUna aplicación para encontrar la mejor comida, fácil y rápido desde tu celular.\n" +
+                    "http://fettapp.000webhostapp.com/";
+            PackageInfo info=pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+            waIntent.setPackage("com.whatsapp");
+            waIntent.putExtra(Intent.EXTRA_TEXT, text);
+            startActivity(Intent.createChooser(waIntent, "Share with"));
+
+        } catch (PackageManager.NameNotFoundException e) {
+            Toast.makeText(getContext(), "WhatsApp no está instalado", Toast.LENGTH_SHORT)
+                    .show();
+        }
+
+    }
     private void abrirCamara() {
         File myFile= new File(Environment.getExternalStorageDirectory(),DIRECTORIO_IMAGEN);
-
         boolean isCreated=myFile.exists();
 
         if(isCreated==false){
@@ -255,12 +459,12 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                 Log.e("Cámara ", e.toString());
             }
         }
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mProgress.setVisibility(View.VISIBLE);
             switch (requestCode) {
                 case SELECTION_CODE:
                     try {
@@ -276,29 +480,105 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
                         mEditor.putString("URI_FOTO",miPath.toString());
                         mEditor.commit();
                     }*/
-                        Glide.clear(ivUser);
-                        Glide.with(getContext()).load(miPath).into(ivUser);
+                        Glide.with(this).clear(ivUser);
+                        Glide.with(getContext()).load(miPath).apply(RequestOptions.circleCropTransform()).into(ivUser);
                         ivUser.setImageURI(miPath);
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(fragment_config.this.getContext().getContentResolver(), miPath);
+                        rezise(bitmap);
+                        mProgress.setVisibility(View.INVISIBLE);
                     }catch (Exception e) {
                         Toast.makeText(getContext(),"Cancelado",Toast.LENGTH_SHORT).show();
+                        mProgress.setVisibility(View.INVISIBLE);
                     }
                     break;
                 case SELECTION_CODE_PHOTO:
-                    MediaScannerConnection.scanFile(getContext(), new String[]{pathImg}, null,
-                            new MediaScannerConnection.OnScanCompletedListener() {
-                                @Override
-                                public void onScanCompleted(String pathImg, Uri uri) {
-                                    Log.i("Path", "" + pathImg);
-                                }
-                            });
-                    bitmapPic = BitmapFactory.decodeFile(pathImg);
-                    ivUser.setImageBitmap(bitmapPic);
-                    //Glide.clear(ivUser);
-                    //Glide.with(getContext()).load(pathImg).into(ivUser);
-                    break;
+                    if(resultCode != 0) {
+
+                        MediaScannerConnection.scanFile(getContext(), new String[]{pathImg}, null,
+                                new MediaScannerConnection.OnScanCompletedListener() {
+                                    @Override
+                                    public void onScanCompleted(String pathImg, Uri uri) {
+                                        Log.i("Path", "" + pathImg);
+                                    }
+                                });
+                        bitmapPic = BitmapFactory.decodeFile(pathImg);
+
+                        //ivUser.setImageBitmap(bitmapPic);
+
+                        rezise(bitmapPic);
+                        Glide.with(getContext()).load(pathImg).apply(RequestOptions.circleCropTransform()).into(ivUser);
+                        mProgress.setVisibility(View.INVISIBLE);
+                        //Glide.clear(ivUser);
+                        //Glide.with(getContext()).load(pathImg).into(ivUser);
+                    }else {
+                        Toast.makeText(getContext(),"Operación Cancelada",Toast.LENGTH_LONG).show();
+                        mProgress.setVisibility(View.INVISIBLE);
+                    }
+                        break;
             }
         googleApiClient.connect();
     }
+    ProgressBar progressBar12;
+    private void rezise(Bitmap bitmap){
+        try {
+            if(bitmap != null){
+                mProgress.setVisibility(View.VISIBLE);
+                //subirFoto.setDrawingCacheEnabled(true);
+                //subirFoto.buildDrawingCache();
+                //subirFoto.setImageBitmap(bitmap);
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                bmOptions.inJustDecodeBounds = true;
+                bmOptions.inSampleSize = 1;
+                bmOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                bmOptions.inJustDecodeBounds = false;
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                final byte[] foto = baos.toByteArray();
+
+                mStorage = FirebaseStorage.getInstance().getReference();
+                prefsimg= getContext().getSharedPreferences("User",MODE_PRIVATE);
+                final String idUser = prefsimg.getString("id","0");
+                Random r = new Random();
+                int i1 = r.nextInt(1000 - 1) * 65;
+                final String src ="Users/"+idUser+"/"+String.valueOf(i1);
+                final StorageReference filepath=mStorage.child(src);
+                UploadTask uploadTask = filepath.putBytes(foto);
+                /*uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        System.out.println("Upload is " + progress + "% done");
+                        int currentprogress = (int) progress;
+                        progressBar12.setProgress(currentprogress);
+                    }
+                });*/
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                DatabaseReference dbRef =FirebaseDatabase.getInstance().getReference();
+                                dbRef.child("Users").child(idUser).child("Image").setValue(String.valueOf(uri));
+                            }
+                        });
+                    }
+                });
+
+
+        /*filepath.putFile(rezise).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+            }
+        });*/
+            }
+        }catch (Exception e){
+            Toast.makeText(getContext(),"Error al cargar imagen",Toast.LENGTH_LONG).show();
+        }
+    }
+
 
     //QUITAR ACCESOS
     private void RevokeAccessGoogle(View vista) {
@@ -356,12 +636,13 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
             String id_google_user = sharedPref.getString("ID_GOOGLE_USER","No hay dato");
             String id_google_photo = sharedPref.getString("ID_GOOGLE_USER_PHOTO","No hay dato");
             tvIdUser.setText(id_google_user);*/
-
-            //Glide.with(this).load(account.getPhotoUrl()).into(ivUser);
+            //Glide.with(this).load(account.getPhotoUrl()).apply(RequestOptions.circleCropTransform()).into(ivUser);
         }else{
             goLogInScreen();
         }
     }
+
+
 
     //Regresar al menu principal
     private void goLogInScreen() {
@@ -371,6 +652,8 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
         ed.remove("id").commit();
         startActivity(intent);
     }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -385,7 +668,7 @@ public class fragment_config extends Fragment implements GoogleApiClient.OnConne
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            Toast.makeText(context, R.string.config, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.config, Toast.LENGTH_SHORT);
         }
     }
 
